@@ -3,7 +3,7 @@ from fpdf import FPDF
 
 
 pdf = FPDF(orientation="P", unit="mm", format="A4")
-df = pd.read_csv("topic.csv")
+df = pd.read_csv("topics.csv")
 
 for index, row in df.iterrows():
     num_of_pages = row["Pages"]
