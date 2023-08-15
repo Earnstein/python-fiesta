@@ -1,7 +1,7 @@
 import glob
 import pandas as pd
 from fpdf import FPDF
-from pathlib  import Path
+from pathlib import Path
 
 filepaths = glob.glob("Invoices/*.xlsx")
 for filepath in filepaths:
@@ -13,5 +13,5 @@ for filepath in filepaths:
     invoice_nr = invoice_nr_list[0]
     text = f"Invoices nr. {invoice_nr}"
     pdf.set_font(family="Times", size=16, style="B")
-    pdf.cell(w=50, h=8, txt=text, align="R")
+    pdf.cell(w=50, h=8, txt=text, align="L", border=1)
     pdf.output(f"PDFs/{filename}.pdf")
