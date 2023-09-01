@@ -2,13 +2,6 @@ import os
 import requests
 
 
-def get_data(days):
-    dates = ["2020-10-08", "2020-10-13", "2020-10-15"]
-    temperatures = [10, 11, 25]
-    temperatures = [i * days for i in temperatures]
-    return dates, temperatures
-
-
 def get_weather_data(city_name: str, forecast_days=None, kind=None):
     num_of_data = 8 * forecast_days
     url = "https://api.openweathermap.org/data/2.5/forecast?"
