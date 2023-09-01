@@ -10,7 +10,7 @@ def get_data(days):
 
 
 def get_weather_data(city_name: str, forecast_days=None, kind=None):
-    num_of_weather_data = 8 * forecast_days
+    num_of_data = 8 * forecast_days
     url = "https://api.openweathermap.org/data/2.5/forecast?"
     params = {
         "q": city_name,
@@ -19,13 +19,12 @@ def get_weather_data(city_name: str, forecast_days=None, kind=None):
     request = requests.get(url, params=params)
     response = request.json()
     response_1 = response['list']
-    weather_data = response_1[:num_of_weather_data]
+    weather_data = response_1[:num_of_data]
     return weather_data
 
 
 if __name__ == "__main__":
-    a = get_weather_data("akure", 5, "temperature")
-    print(a)
+    print(__name__)
 
 
 
