@@ -1,12 +1,6 @@
 import streamlit as st
 import plotly.express as px
-
-
-def get_data(days):
-    dates = ["2020-10-08", "2020-10-13", "2020-10-15"]
-    temperatures = [10, 11, 25]
-    temperatures = [i * days for i in temperatures]
-    return dates, temperatures
+from backend import get_data
 
 
 st.title("Weather Forecast for the Next Days")
