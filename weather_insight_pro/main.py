@@ -28,6 +28,22 @@ if place:
             }
             sky_data = [entry["weather"][0]["main"] for entry in weather_data]
             image_paths = [sky_conditions[key] for key in sky_data]
-            st.image(image_paths, width=115)
+            col1, col2, col3, col4, col5 = st.columns(5)
+            for i, (image_path, sky_condition) in enumerate(zip(image_paths, sky_data)):
+                if i < 8:
+                    col1.image(image_path, width=115)
+                    col1.text(sky_condition)
+                elif i < 16:
+                    col2.image(image_path, width=115)
+                    col2.text(sky_condition)
+                elif i < 24:
+                    col3.image(image_path, width=115)
+                    col3.text(sky_condition)
+                elif i < 32:
+                    col4.image(image_path, width=115)
+                    col4.text(sky_condition)
+                else:
+                    col5.image(image_path, width=115)
+                    col5.text(sky_condition)
     except KeyError:
         st.info(f"{place} does not exists")
