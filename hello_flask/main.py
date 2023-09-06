@@ -8,12 +8,12 @@ DATA_DIRECTORY = "data_small"
 
 
 def load_station_data(filename, skip_rows):
-    return pd.read_csv(filename, skiprows=skip_rows)
+    return pd.read_csv(filename, skiprows=skip_rows, parse_dates=["    DATE"])
 
 
 @app.route("/")
 def home():
-    stations_columns = ["STAID", "STANAME"]
+    stations_columns = ["STAID", "STANAME                                 "]
     stations = load_station_data(f"{DATA_DIRECTORY}/stations.txt", skip_rows=17)
     stations_table = stations[stations_columns].to_html()
     return render_template("index.html", data=stations_table)
@@ -29,7 +29,7 @@ def station(station):
     return jsonify(station_data)
 
 
-@app.route("/api/v1/<station>/<date>")
+@app.route("")
 def stations(station, date):
     station_variable = str(station).zfill(6)
     filename = f"{DATA_DIRECTORY}/TG_STAID{station_variable}.txt"
