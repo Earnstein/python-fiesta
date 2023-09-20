@@ -1,39 +1,12 @@
 import os
 import requests
-import smtplib
-import ssl
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
 from datetime import datetime
-
+from backend import send_email
 
 API_KEY = os.getenv("NEWS_ORG_API_KEY")
-PASSWORD = os.getenv("MY_EMAIL_PASSWORD")
-SENDER_EMAIL = os.getenv("MY_EMAIL")
-RECEIVER_EMAIL = os.getenv("MY_EMAIL")
-
 DATE = datetime.today().strftime("%Y-%m-%d")
 ENDPOINT = "https://newsapi.org/v2/everything"
 HEADER = {"X-Api-Key": API_KEY}
-HOST = "smtp.gmail.com"
-PORT = 465
-
-SUBJECT = "Daily Internship News"
-
-msg = MIMEMultipart()
-msg["From"] = SENDER_EMAIL
-msg["To"] = RECEIVER_EMAIL
-msg["Subject"] = SUBJECT
-
-context = ssl.create_default_context()
-
-
-def send_email(email_message):
-    """Sends an email."""
-    msg.attach(MIMEText(email_message, "html"))
-    with smtplib.SMTP_SSL(host=HOST, port=PORT, context=context) as server:
-        server.login(SENDER_EMAIL, PASSWORD)
-        server.sendmail(SENDER_EMAIL, RECEIVER_EMAIL, msg=msg.as_string())
 
 
 def get_news(topic: str, date=DATE, num_results=5):
