@@ -1,10 +1,9 @@
 from django.shortcuts import render, redirect
-from django.views.decorators.csrf import csrf_exempt
 from .forms import UserForm
 from .models import User
+from django.contrib import messages
 # Create your views here.
 
-@csrf_exempt
 def httpRegisterUser(request):
     if request.method == 'POST':
         form = UserForm(request.POST)
@@ -18,6 +17,8 @@ def httpRegisterUser(request):
             user.role = User.CUSTOMER
             user.save()
             print(f"{user.first_name} profile is created.")
+            # Show a toast message upon successful user profile creation
+            messages.success(request, message="Your account has been successfully registered!")
             redirect('registerUser')
         else:
             print("form is invalid")
