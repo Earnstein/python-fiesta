@@ -42,7 +42,7 @@ class User(AbstractBaseUser):
     VENDOR = 1
     CUSTOMER = 2
 
-    ROLE_CHOICE = ((VENDOR, "Restaurant"), (CUSTOMER, "Customer"))
+    ROLE_CHOICE = ((VENDOR, "Vendor"), (CUSTOMER, "Customer"))
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     username = models.CharField(max_length=50, unique=True)
