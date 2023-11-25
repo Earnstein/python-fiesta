@@ -15,7 +15,7 @@ sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=SPOTIFY_CLIENT_ID,
                                                redirect_uri="http://example.com",
                                                scope="playlist-modify-private",
                                                show_dialog=True,
-                                               cache_path="token.txt",
+                                               cache_path="a.txt",
                                                username=USERNAME))
 user_id = sp.current_user()['id']
 date = input("Enter your date in the format YYYY-MM-DD: ")
