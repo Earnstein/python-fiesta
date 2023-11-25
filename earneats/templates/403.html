@@ -5,13 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>403 Forbidden</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <script src="https://unpkg.com/@dotlottie/player-component@latest/dist/dotlottie-player.mjs" type="module"></script> 
     <style type="text/css">
-      h1 {
-        font-size: 1200%;
-        font-weight: 900;
+      body{
+        background-color: rgba(0, 0, 0, 0.8);
+      }
+      h2{
+        color: #fff;
+        font-size: 2rem;
+
       }
       #error-page {
-        margin:  20rem auto ;
         text-align: center
       }
 
@@ -20,21 +24,25 @@
         justify-content: center;
         align-items: center;
       }
+      .center{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
       @media (max-width:568px) {
-        h1{
-            font-size: 6rem;
-        }
         h2{
             font-size: 1.5rem;
         }
       }
     </style>
 </head>
-<body>
-  <div class="container page">
+<body class=" page">
+  <div class="container">
     <div class="row">
         <div id="error-page" class="col-md-12">
-            <h1>403</h1>
+            <div class="center">
+              <dotlottie-player src="https://lottie.host/7751db41-1d31-4960-8deb-a40f81d2b592/01nAnpYpLu.json" background="transparent" speed="1" style="width: 300px; height: 300px;" loop autoplay></dotlottie-player>
+            </div>
             <h2>You are not authorized to view this page!</h2>
             <br>
             <a class="btn btn-primary" href="{% url 'myAccount' %}">Return to the main page</a>
