@@ -1,0 +1,110 @@
+{% extends "base.html" %} 
+{% load static %} 
+{% block content %}
+<!-- Main Section Start -->
+<div class="main-section">
+  <div
+    class="page-section nopadding cs-nomargin"
+    style="
+      margin-top: 0px;
+      padding-top: 60px;
+      padding-bottom: 60px;
+      margin-bottom: 0px;
+    "
+  >
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+          <div class="user-dashboard loader-holder dashboard" style=" width: 400px;">
+            <div class="user-holder">
+              <h4 class="text-center" style="margin-bottom: 0">LOGIN</h4>
+              <p class="text-center">
+                Order food from your favorite resturants.
+              </p>
+              <hr />
+              <div id="restaurant-sets-holder">
+                <form
+                  class="form-fields-set foodbakery-dev-restaurant-form"
+                  method="post"
+                  action="{% url 'login' %}"
+                  enctype="multipart/form-data"
+                  role="form"
+                  aria-labelledby="login-form-title"
+                >
+                  {% csrf_token %}
+                  <ul
+                    class="register-add-restaurant-tab-container restaurant-information-tab-container"
+                  >
+                    <li>
+                      <div class="row">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                          <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                              <div class="field-holder">
+                                <label>Email</label>
+                                <input
+                                  type="email"
+                                  name="email"
+                                  placeholder="Enter your email address"
+                                  aria-required="true"
+                                  aria-label="email"
+                                  autocomplete="email"
+                                  required
+                                />
+                              </div>
+                            </div>
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                              <div class="field-holder">
+                                <label>Password</label>
+                                <input
+                                  type="password"
+                                  name="password"
+                                  placeholder="password"
+                                  aria-required="true"
+                                  aria-label="password"
+                                  autocomplete="current-password"
+                                  required
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </li>
+                    <li>
+                      <div class="row">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                          <div class="field-holder">
+                            <div class="payment-holder">
+                              <input
+                                type="submit"
+                                value="Submit"
+                                id="btn-next-restaurant-information"
+                                class="bgcolor"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {% comment %} show success message(possible due to context
+                      processors in settings.py) {% endcomment %}
+                      <div class="row">
+                        <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
+                          <!-- Load message-->
+                          {% include "includes/alert.html" %}
+                        </div>
+                      </div>
+                    </li>
+                  </ul>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Main Section End -->
+{% endblock %}
