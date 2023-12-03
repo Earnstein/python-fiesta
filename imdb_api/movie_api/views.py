@@ -1,34 +1,70 @@
-from django.shortcuts import render
-from django.http import JsonResponse
+from .serlializers import MovieSerialiser
+from rest_framework.response import Response
 from .models import Movie
-from django.views.decorators.http import require_POST
-from django.views.decorators.csrf import csrf_exempt
+from rest_framework.decorators import api_view
+from rest_framework import status
 # Create your views here.
 
+@api_view(["GET", "POST"])
 def httpGetMovies(request):
-    all_movies = Movie.objects.all()
-    json_data = {
-        'movies': list(all_movies.values())
-    }
-    return JsonResponse(json_data)
 
-@csrf_exempt
-@require_POST
-def httpCreateMovie(request):
-    print(request.POST)
-    movie_name = request.POST['movie_name']
-    description = request.POST['description']
-    if movie_name != '' and description != '':
-        new_movie = Movie.objects.create(
-            name=movie_name, 
-            description=description
-        )
-        new_movie.active = True
-        new_movie.save()
-        return JsonResponse({
-            'message': "data succussfully saved"
-        })
+    if request.method == "GET":
+        movies = Movie.objects.all().order_by("id")
+        movie_serializer = MovieSerialiser(movies, many=True)
+        return Response(movie_serializer.data)
+
+    if request.method == "POST":
+        movie_serialiser = MovieSerialiser(data=request.data)
+        if movie_serialiser.is_valid():
+            movie_serialiser.save()
+            res = {
+                "message": "created",
+                "movie": movie_serialiser.data
+            }
+            return Response(res, status=status.HTTP_201_CREATED)
+        return Response(movie_serialiser.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(["GET", "PUT", "PATCH", "DELETE"])
+def httpUpdateMovie(request, pk):
+    if request.method == "GET":
+        try:
+            movie = Movie.objects.get(pk=pk)
+            movie_serializer = MovieSerialiser(movie)
+            return Response(movie_serializer.data)
+        except Movie.DoesNotExist:
+            return Response({"message": "not found"}, status=status.HTTP_404_NOT_FOUND)
     
-    return JsonResponse({
-            'message': "invalid data"
-        })
+    if request.method == "PATCH":
+        try:
+            movie = Movie.objects.get(pk=pk)
+            movie_serializer = MovieSerialiser(movie, data=request.data)
+            if movie_serializer.is_valid():
+                movie_serializer.save()
+                return Response(movie_serializer.data, status=status.HTTP_200_OK)
+            return Response(movie_serializer.errors)
+        except Movie.DoesNotExist:
+            return Response({"message": "not found"}, status=status.HTTP_404_NOT_FOUND)
+    
+    if request.method == "PUT":
+        try:
+            movie = Movie.objects.get(pk=pk)
+            movie_serializer = MovieSerialiser(movie, data=request.data)
+            if movie_serializer.is_valid():
+                movie_serializer.save()
+                return Response(movie_serializer.data, status=status.HTTP_200_OK)
+            return Response(movie_serializer.errors)
+        except Movie.DoesNotExist:
+            return Response({"message": "not found"}, status=status.HTTP_404_NOT_FOUND)
+    
+    if request.method == "DELETE":
+        try:
+            movie = Movie.objects.get(pk=pk)
+            movie_serializer  =  MovieSerialiser(movie)
+            res = {
+                "message":f"{movie.name} is deleted",
+                "movie": movie_serializer.data
+            }
+            movie.delete()
+            return Response(res, status=status.HTTP_200_OK)
+        except Movie.DoesNotExist:
+            return Response({"message": "not found"}, status=status.HTTP_404_NOT_FOUND)
