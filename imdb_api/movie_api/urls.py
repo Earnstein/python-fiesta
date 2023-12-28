@@ -5,10 +5,10 @@ from .views.streamplatform_View import StreamPlatformListAV ,StreamPlatformDetai
 
 
 urlpatterns = [
-    path("movies/", WatchListAV.as_view(), name="movies"),
-    path("update_movies/<int:pk>/", WatchDetailAV.as_view(), name="update"),
+    path("list/", WatchListAV.as_view(), name="list"),
+    path("list/<int:pk>/", WatchDetailAV.as_view(), name="list_details"),
     path("stream/", StreamPlatformListAV.as_view(), name="streams"),
-    path("update_stream/<int:pk>/", StreamPlatformDetailAV.as_view(), name="update_streams"),
+    path("stream/<int:pk>/", StreamPlatformDetailAV.as_view(), name="stream_details"),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

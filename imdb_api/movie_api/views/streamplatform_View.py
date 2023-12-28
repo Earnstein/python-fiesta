@@ -13,8 +13,8 @@ class StreamPlatformListAV(APIView):
     """
 
     def get(self, request):
-        movies = StreamPlatform.objects.all().order_by("id")
-        serializer = StreamPlatformSerialiser(movies, many=True)
+        platform = StreamPlatform.objects.all().order_by("id")
+        serializer = StreamPlatformSerialiser(platform, many=True, context={'request': request})
         return Response(serializer.data)
        
     def post(self, request):
@@ -42,7 +42,7 @@ class StreamPlatformDetailAV(APIView):
 
     def get(self, request, pk,  format=None):
             platform = self.get_object(pk)
-            serializer = StreamPlatformSerialiser(platform)
+            serializer = StreamPlatformSerialiser(platform, context={'request': request})
             return Response(serializer.data)
     
 
