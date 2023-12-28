@@ -5,7 +5,6 @@ from rest_framework import status
 from rest_framework.views import APIView
 from django.http import Http404
 
-
 class WatchListAV(APIView):
     """
     List all movies or creates new one
