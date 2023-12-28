@@ -5,13 +5,13 @@ from .models import Watchlist, StreamPlatform, Review
 class ReviewSerialiser(serializers.ModelSerializer):
     class Meta:
         model = Review
-        fields = '__all__'
+        exclude = ['created', 'updated']
 
 class WatchListSerialiser(serializers.ModelSerializer):
     reviews = ReviewSerialiser(many=True, read_only=True)
     class Meta:
         model = Watchlist
-        fields = '__all__'
+        exclude = ['created']
         depth = 1
 
 class StreamPlatformSerialiser(serializers.HyperlinkedModelSerializer):

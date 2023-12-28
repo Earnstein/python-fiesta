@@ -3,7 +3,7 @@ from .models import Watchlist, StreamPlatform, Review
 
 
 class MovieAdmin(admin.ModelAdmin):
-    list_display = ('title', 'storyline', 'active')
+    list_display = ('title', 'storyline', 'active','platform')
     list_display_links = ('title', 'storyline')
     ordering = ('title',)
 
