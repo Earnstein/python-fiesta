@@ -1,8 +1,8 @@
 from django.urls import path
 from rest_framework.urlpatterns import format_suffix_patterns
-from .views.watch_list_view import WatchListAV, WatchDetailAV
+from .views.watchlist_view import WatchListAV, WatchDetailAV
 from .views.streamplatform_View import StreamPlatformListAV ,StreamPlatformDetailAV
-from .views.view_review import ReviewListAPIView, ReviewUpdateAPIView
+from .views.review_view import ReviewListAPIView, ReviewUpdateAPIView
 
 
 urlpatterns = [
