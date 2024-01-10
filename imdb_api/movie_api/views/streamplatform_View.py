@@ -1,9 +1,5 @@
 from ..serlializers import StreamPlatformSerialiser
-from rest_framework.response import Response
 from ..models import StreamPlatform
-from rest_framework import status
-from rest_framework.views import APIView
-from django.http import Http404
 from rest_framework import generics
 
 class StreamPlatformListAV(generics.ListCreateAPIView):
