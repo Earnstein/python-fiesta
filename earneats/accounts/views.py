@@ -243,5 +243,6 @@ def httpResetPassword(request):
         user.is_active = True
         user.save()
         messages.success(request, "Password reset successful")
+         
         return redirect('login')
     return render(request, "accounts/resetPassword.html")
