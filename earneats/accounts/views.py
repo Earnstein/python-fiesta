@@ -101,7 +101,6 @@ def httpRegisterVendor(request):
     return render(request, "accounts/registerVendor.html", context)
 
 
-
 # ACCOUNT ACCTIVATOR VIEW
 def activate(request, uidb64, token):
     """
@@ -121,7 +120,6 @@ def activate(request, uidb64, token):
     user.save()
     messages.success(request, "Congratulations! Your account is activated")
     return redirect("userAccount")
- 
     
 
 # LOGIN VIEW
@@ -188,7 +186,7 @@ def httpVendorDashboard(request):
     return render(request, "accounts/vendorDashboard.html")
 
 
-# RESET PASSWORD VIEW
+# FORGET PASSWORD VIEW
 def httpForgotPassword(request):
     """
     View for resetting user passwords
@@ -208,6 +206,7 @@ def httpForgotPassword(request):
 
     return render(request, "accounts/forgotPassword.html")
 
+# RESET PASSWORD VIEW
 def httpResetPasswordValidate(request, uidb64, token):
     """
     View for validating user password
@@ -226,7 +225,7 @@ def httpResetPasswordValidate(request, uidb64, token):
     messages.info(request, "Please reset your password")
     return redirect("resetPassword")
  
-
+ # RESET PASSWORD VIEW
 def httpResetPassword(request):
     """
     View for resetting user passwords

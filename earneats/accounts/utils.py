@@ -51,12 +51,23 @@ def send_custom_email(request, user, email_type):
         # Handle unknown email_type or provide default behavior
         raise ValueError("Invalid email_type")
 
-    message = render_to_string(template_name, {
+    context = {
         "user": user,
         "domain": current_site,
         "uid": urlsafe_base64_encode(force_bytes(user.pk)),
         "token": default_token_generator.make_token(user),
-    })
+    }
+
+    message = render_to_string(template_name, context)
     to_email = user.email
     mail = EmailMessage(subject, message, from_email=from_email, to=[to_email])
+    mail.send()
+
+
+# SEND VENDOR APPROVAL EMAIL
+def send_vendor_approval_email(mail_subject, mail_template, context):
+    from_email = settings.DEFAULT_FROM_EMAIL
+    message = render_to_string(mail_template, context)
+    to_email =  context['user'].email
+    mail = EmailMessage(mail_subject, message, from_email, to=[to_email])
     mail.send()
