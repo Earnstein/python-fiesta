@@ -52,5 +52,6 @@ def main():
     full_message = "\n".join(messages)
     send_email(full_message)
 
+
 if __name__ == "__main__":
     main()
