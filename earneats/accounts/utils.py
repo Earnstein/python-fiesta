@@ -23,7 +23,7 @@ def check_role_customer(user):
 
 
 # GET CURRENT USER ROLE AND REDIRECT TO APPRORIATE PAGE
-def get_user_role(user) -> str:
+def get_user_role(user):
     if user.role == 1:
         redirectUrl = "vendorDashboard"
     elif user.role == 2:
@@ -34,6 +34,7 @@ def get_user_role(user) -> str:
 
 
 # SEND ACCOUNT ACTIVATION EMAIL
+
 def send_custom_email(request, user, email_type):
     """
     Generic function to send custom emails based on the email_type.
@@ -62,7 +63,6 @@ def send_custom_email(request, user, email_type):
     to_email = user.email
     mail = EmailMessage(subject, message, from_email=from_email, to=[to_email])
     mail.send()
-
 
 # SEND VENDOR APPROVAL EMAIL
 def send_vendor_approval_email(mail_subject, mail_template, context):
