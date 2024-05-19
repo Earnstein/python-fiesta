@@ -6,6 +6,7 @@ urlpatterns = [
     path("registerVendor/", views.httpRegisterVendor, name="registerVendor"),
     path("login/", views.httpLogin, name="login"),
     path("logout/", views.httpLogout, name="logout"),
+    path("", views.httpGetUserAccount),
     path("myAccount/", views.httpGetUserAccount, name="userAccount"),
     path("customerDashboard/", views.httpCustomerDashboard, name="customerDashboard"),
     path("vendorDashboard/", views.httpVendorDashboard, name="vendorDashboard"),
