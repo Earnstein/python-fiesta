@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 {% block content %}
-
+{% include "includes/alert.html" %}
 <!-- Main Section Start -->
 <div class="main-section">
     <div class="page-section restaurant-detail-image-section" style=" background: url({% static 'extra-images/cover-photo01.jpg' %}) no-repeat scroll 0 0 / cover;">
@@ -40,7 +40,7 @@
             <div class="row">
                 <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
                     <!-- load a sidebar -->
-                    {% include "includes/vendor_siderbar.html" %}
+                    {% include "includes/vendor_sidebar.html" %}
                 </div>
                 <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
                     <div class="user-dashboard loader-holder">
@@ -51,7 +51,7 @@
                                     <div class="element-title has-border right-filters-row">
                                         <h5>Recent Orders</h5>
                                         <div class="right-filters row pull-right">
-                                            <div class="col-lg-6 col-md-6 col-xs-6">
+                                            <div class="col-12">
                                                 <div class="input-field">
                                                     <select class="chosen-select-no-single">
                                                         <option selected="selected" value="">Select Orders Status</option>
@@ -121,6 +121,4 @@
     </div>
 </div>
 <!-- Main Section End -->
-
-{% include "includes/alert.html" %}
 {% endblock %}
