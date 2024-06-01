@@ -7,7 +7,7 @@ from .forms import UserForm
 from .models import User, UserProfile
 from vendor.forms import VendorForm
 from accounts.utils import check_role_customer, check_role_vendor, get_user_role, send_custom_email
-
+from .context_processors import get_vendor
 
 # USER REGISTRATION VIEW
 def httpRegisterUser(request):
@@ -47,7 +47,6 @@ def httpRegisterUser(request):
         "form": form
     }
     return render(request, "accounts/registerUser.html", context)
-
 
 
 # VENDOR REGISTRATION VIEW
@@ -183,7 +182,8 @@ def httpVendorDashboard(request):
     """
     View for displaying the vendor dashboard. Only accessible to vendors.
     """
-    return render(request, "accounts/vendorDashboard.html")
+    context = get_vendor(request)
+    return render(request, "accounts/vendorDashboard.html", context)
 
 
 # FORGET PASSWORD VIEW
