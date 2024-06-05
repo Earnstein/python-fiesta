@@ -12,3 +12,9 @@
     top: 100%;
     animation: show-toast 8s;
 }
+
+.btn.btn-info{
+    padding: 2px 0.5rem;
+    font-size: 12px;
+    cursor: pointer;
+}
