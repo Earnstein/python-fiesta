@@ -5,8 +5,11 @@ from accounts.forms import UserProfileForm
 from accounts.models import UserProfile
 from django.contrib import messages
 from django.shortcuts import redirect
-# Create your views here.
+from django.contrib.auth.decorators import login_required, user_passes_test
+from accounts.utils import check_role_vendor
 
+@login_required(login_url="login")
+@user_passes_test(check_role_vendor)
 def profileView(request):
     profile = get_object_or_404(UserProfile, user=request.user)
     vendor = get_object_or_404(Vendor, user=request.user)
@@ -21,10 +24,9 @@ def profileView(request):
         else:
             messages.error(request, "Error updating profile")
             print(profile_form.errors, vendor_form.errors)
-            return redirect("vendorProfile")
-            
-    profile_form = UserProfileForm(instance=profile)
-    vendor_form = VendorForm(instance=vendor)
+    else:    
+        profile_form = UserProfileForm(instance=profile)
+        vendor_form = VendorForm(instance=vendor)
 
     context = {"profile_form": profile_form, "vendor_form": vendor_form, "profile": profile, "vendor": vendor}
     return render(request, "vendor/profile.html", context)
