@@ -125,12 +125,6 @@ MEDIA_ROOT = BASE_DIR /"media"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# NOTIFICATION MESSAGE CONFIGURATION
-
-MESSAGE_TAGS = {
-    messages.ERROR: "danger",
-}
-
 # EMAIL CONFIGURATION
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = config("EMAIL_HOST")
