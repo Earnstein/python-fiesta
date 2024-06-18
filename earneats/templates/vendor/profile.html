@@ -40,11 +40,12 @@
                             </ul>
                           </div>
                           <div class="text-holder">
-                            <label>Update Logo</label>
+                            <label>Update Profile Image</label>
                             <div class="upload-gallery">
                                 {{profile_form.profile_picture}}
                             </div>
                           </div>
+                          <label class="text-danger">{{profile_form.profile_picture.errors}}</label>
                         </div>
                       </div>
                       <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
@@ -70,6 +71,7 @@
                               {{profile_form.cover_picture}}
                             </div>
                           </div>
+                          <label class="text-danger">{{profile_form.cover_picture.errors}}</label>
                         </div>
                       </div>
                       <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
@@ -95,6 +97,7 @@
                              {{vendor_form.vendor_license}}
                             </div>
                           </div>
+                          <label class="text-danger">{{vendor_form.vendor_license.errors}}</label>
                         </div>
                       </div>
                       <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
@@ -104,31 +107,23 @@
                         </div>
                       </div>
 
-                      <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                      <div class="col-12">
                         <div class="field-holder">
                           <label>Address *</label>
-                            {{profile_form.address_line_1}}
+                            {{profile_form.address}}
                         </div>
                       </div>
-
-                      <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                        <div class="field-holder">
-                          <label>Address 2 </label>
-                            {{profile_form.address_line_2}}
-                        </div>
-                      </div>
-
                       <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                         <div class="field-holder">
                           <label>Country *</label>
-                            {{vendor_form.vendor_name}}
+                            {{profile_form.country}}
                         </div>
                       </div>
 
                       <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                         <div class="field-holder">
                           <label>State *</label>
-                            {{vendor_form.vendor_name}}
+                            {{profile_form.state}}
                         </div>
                       </div>
 
@@ -156,7 +151,7 @@
                       <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                         <div class="field-holder">
                           <label>Longitude *</label>
-                            {{profile_form.country}}
+                            {{profile_form.longitude}}
                         </div>
                       </div>
                     </div>
