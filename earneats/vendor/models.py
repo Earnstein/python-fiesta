@@ -30,5 +30,5 @@ class Vendor(models.Model):
                 send_vendor_approval_email(mail_subject, mail_template, context)
         return super(Vendor, self).save(*args, **kwargs)
 
-    def __str__(self) -> str:
+    def __str__(self):
         return self.vendor_name 
