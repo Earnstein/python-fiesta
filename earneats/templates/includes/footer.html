@@ -44,7 +44,16 @@
 </footer>
 <!-- Footer End -->
 </div>
-
+    <script>
+        {% for message in messages %}
+        swal({
+            title: "{{message}}",
+            icon: "{{message.tags}}",
+            text: "{{message.tags}}",
+            timer: 2000,
+        })
+        {% endfor %}
+    </script>
 	<!-- Modal Popup End -->
 	<script src="{% static 'js/scripts.js' %}"></script>
 	<script src="{% static 'js/functions.js' %}"></script>
