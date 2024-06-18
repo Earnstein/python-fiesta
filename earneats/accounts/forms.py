@@ -1,6 +1,6 @@
 from django import forms
 from .models import User, UserProfile
-
+from .form_validations import allow_images_only
 
 class UserForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput())
@@ -21,8 +21,11 @@ class UserForm(forms.ModelForm):
     
 
 class UserProfileForm(forms.ModelForm):
-    profile_picture = forms.ImageField(widget=forms.FileInput(attrs={"class": "btn btn-info"}))
-    cover_picture = forms.ImageField(widget=forms.FileInput(attrs={"class": "btn btn-info"}))
+    address = forms.CharField(widget=forms.TextInput(attrs={"placeholder": "Your address...", "required": "required"}))
+    profile_picture = forms.FileField(widget=forms.FileInput(attrs={"class": "btn btn-info"}), validators=[allow_images_only])
+    cover_picture = forms.FileField(widget=forms.FileInput(attrs={"class": "btn btn-info"}), validators=[allow_images_only])
+    latitude = forms.CharField(widget=forms.TextInput(attrs={"readonly": "readonly"}))
+    longitude = forms.CharField(widget=forms.TextInput(attrs={"readonly": "readonly"}))
     class Meta:
         model = UserProfile
-        fields = ["profile_picture", "cover_picture",  "address_line_1", "address_line_2", "city", "state", "country", "pin_code", "latitude", "longitude"]
+        fields = ["profile_picture", "cover_picture",  "address", "city", "state", "country", "pin_code", "latitude", "longitude"]
