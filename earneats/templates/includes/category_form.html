@@ -1,0 +1,48 @@
+<form action="{% url 'createCategory' %}" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="form-fields-set">
+      <ul>
+        <li>
+          <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+              <div class="field-holder">
+                <label>Category name *</label>
+                  {{form.category_name}}
+              </div>
+            </div>
+          </div>
+        </li>
+
+        <li>
+          <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+              <div class="field-holder">
+                <label>Description *</label>
+                  {{form.description}}
+              </div>
+            </div>
+          </div>
+        </li>
+      </ul>
+      <div>
+
+      {% for field in form %}
+          {% if field.errors %}
+              {% for error in field.errors  %}
+              <ul>
+                  <li class="text-danger">{{error}}</li>
+              </ul>
+              {% endfor %}
+          {% endif %}
+      {% endfor %}
+        <div class="field-holder">
+          <div class="payment-holder input-button-loader">
+            <input
+              type="submit"
+              value="Add"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+ </form>
