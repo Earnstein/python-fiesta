@@ -1,0 +1,50 @@
+{% extends 'base.html' %} 
+{% load static %} 
+{% block content %} 
+{% include 'includes/alert.html' %} 
+{% include 'includes/cover.html' %}
+
+<div class="page-section account-header buyer-logged-in">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+        <!-- load a sidebar -->
+        {% include "includes/vendor_sidebar.html" %}
+      </div>
+      <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
+        <div class="user-dashboard loader-holder">
+          <div class="user-holder">
+            <h5 class="text-uppercase"><a href="{% url 'menu' %}"><i class="fa-solid fa-arrow-left mr-2"></i></a>Menu Builder</h5>
+            <hr>
+            <table class="table table-hover table-borderless">
+                <a href="#" class="btn btn-info float-right m-2"><i class="fa-solid fa-plus mr-2"></i>Add Category</a>
+                <a href="#" class="btn btn-success float-right m-2"><i class="fa-solid fa-plus mr-2"></i>Add Food</a>
+                <thead>
+                    <h6 class="mb-0">Category: <span class="text-success">{{ category.category_name }}</span></h6>
+                    <hr>
+                </thead>
+                <tbody>
+                  {% for food in food_items  %}
+                  <tr>
+                    <th scope="row">{{forloop.counter}}</th>
+                    <td>
+                        <a href="#" class="font-weight-bold text-black"><p class="mb-0">{{food.food_title}}</p></a>
+                        <small class="text-muted">{{ food.description }}</small>
+                    </td>
+                    <td>
+                        <div class="d-flex justify-content-end">
+                            <a href="#" class="btn btn-warning mr-2"><i class="fa-solid fa-pen-to-square mr-2"></i>Edit</a>
+                            <a href="#" class="btn btn-danger"><i class="fa-solid fa-trash mr-2"></i>Delete</a>
+                        </div>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
