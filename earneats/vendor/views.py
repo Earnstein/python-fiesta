@@ -1,12 +1,13 @@
 from django.shortcuts import render, get_object_or_404
-from .forms import VendorForm
-from .models import Vendor
-from accounts.forms import UserProfileForm
-from accounts.models import UserProfile
 from django.contrib import messages
 from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required, user_passes_test
 from accounts.utils import check_role_vendor
+from accounts.forms import UserProfileForm
+from accounts.models import UserProfile
+from menu.models import Category, FoodItem
+from .forms import VendorForm
+from .models import Vendor
 
 @login_required(login_url="login")
 @user_passes_test(check_role_vendor)
@@ -33,3 +34,23 @@ def profileView(request):
 
 
 
+def menuView(request):
+    vendor = get_object_or_404(Vendor, user=request.user)
+    categories = Category.objects.filter(vendor=vendor)
+    context = {"categories": categories}
+    return render(request, "vendor/menu.html", context)
+
+def getMenuByCategory(request, pk=None):
+    category = get_object_or_404(Category, pk=pk)
+    food_items = FoodItem.objects.filter(vendor=category.vendor, category=category)
+    context = {"food_items": food_items, "category": category}
+    return render(request, "vendor/getMenuByCategory.html", context)
+
+def createMenu(request):
+    return render(request, "vendor/createMenu.html")
+
+def updateMenu(request):
+    return render(request, "vendor/updateMenu.html")
+
+def deleteMenu(request):
+    return render(request, "vendor/deleteMenu.html")
