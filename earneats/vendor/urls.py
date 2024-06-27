@@ -6,9 +6,13 @@ from accounts import views as acct_views
 urlpatterns = [
     path("profile/", views.profileView, name="vendorProfile"),
     path("", acct_views.httpVendorDashboard, name="vendorDashboard"),
+
+    # MENU URLS
+
     path("menu/", views.menuView, name="menu"),
-    path("menu/create/", views.createMenu, name="createMenu"),
-    path("menu/<int:pk>/update/", views.updateMenu, name="updateMenu"),
-    path("menu/<int:pk>/delete/", views.deleteMenu, name="deleteMenu"),
     path("menu/category/<int:pk>/", views.getMenuByCategory, name="getMenuByCategory"),
+
+    path("menu/category/create/", views.createCategory, name="createCategory"),
+    path("menu/category/update/<int:pk>/", views.updateCategory, name="updateCategory"),
+    path("menu/category/delete/<int:pk>/", views.deleteMenu, name="deleteMenu"),
 ]
