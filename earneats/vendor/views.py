@@ -57,6 +57,8 @@ def getMenuByCategory(request, pk=None):
     context = {"food_items": food_items, "category": category}
     return render(request, "vendor/getMenuByCategory.html", context)
 
+@login_required(login_url="login")
+@user_passes_test(check_role_vendor)
 def createCategory(request):
     if request.method == "POST":
         form = CategoryForm(request.POST)
@@ -73,6 +75,8 @@ def createCategory(request):
     context = {"form": form}
     return render(request, "vendor/createCategory.html", context)
 
+@login_required(login_url="login")
+@user_passes_test(check_role_vendor)
 def updateCategory(request, pk=None):
     if request.method == "POST":
         category = get_object_or_404(Category, pk=pk)
@@ -89,6 +93,8 @@ def updateCategory(request, pk=None):
     context = {"form": form, "category": category}
     return render(request, "vendor/updateCategory.html", context)
 
+@login_required(login_url="login")
+@user_passes_test(check_role_vendor)
 def deleteCategory(request, pk=None):
     category = get_object_or_404(Category, pk=pk)    
     category.delete()
