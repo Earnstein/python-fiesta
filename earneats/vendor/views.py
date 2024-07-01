@@ -50,12 +50,12 @@ def menuView(request):
 
 @login_required(login_url="login")
 @user_passes_test(check_role_vendor)
-def getMenuByCategory(request, pk=None):
+def getCategory(request, pk=None):
     vendor = get_vendor(request)
     category = get_object_or_404(Category, pk=pk)
     food_items = FoodItem.objects.filter(vendor=vendor, category=category)
     context = {"food_items": food_items, "category": category}
-    return render(request, "vendor/getMenuByCategory.html", context)
+    return render(request, "vendor/getCategory.html", context)
 
 @login_required(login_url="login")
 @user_passes_test(check_role_vendor)
