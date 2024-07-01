@@ -15,8 +15,7 @@ class Category(models.Model):
 
     def clean(self):
         self.category_name = self.category_name.capitalize()
-    
-    
+     
     def __str__(self):
         return self.category_name
 
