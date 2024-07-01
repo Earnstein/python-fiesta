@@ -14,5 +14,5 @@ urlpatterns = [
 
     path("menu/category/create/", views.createCategory, name="createCategory"),
     path("menu/category/update/<int:pk>/", views.updateCategory, name="updateCategory"),
-    path("menu/category/delete/<int:pk>/", views.deleteMenu, name="deleteMenu"),
+    path("menu/category/delete/<int:pk>/", views.deleteCategory, name="deleteCategory"),
 ]
