@@ -1,7 +1,6 @@
 {% extends 'base.html' %} 
 {% load static %} 
 {% block content %} 
-{% include 'includes/alert.html' %} 
 {% include 'includes/cover.html' %}
 
 <div class="page-section account-header buyer-logged-in">
@@ -16,8 +15,8 @@
           <div class="user-holder">
             <h5 class="text-uppercase"><a onclick=history.back()><i class="fa-solid fa-arrow-left mr-2"></i></a>Update Category</h5>
             <hr>
-           <form action="{% url 'updateCategory'%}" method="POST" enctype="multipart/form-data">
-              {% csrf_token %}
+           <form action="{% url 'updateCategory' category.id %}" method="POST" enctype="multipart/form-data">
+              {% csrf_token %} 
               <div class="form-fields-set">
                 <ul>
                   <li>
