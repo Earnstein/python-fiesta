@@ -1,7 +1,6 @@
 {% extends 'base.html' %} 
 {% load static %} 
 {% block content %} 
-{% include 'includes/alert.html' %} 
 {% include 'includes/cover.html' %}
 
 <div class="page-section account-header buyer-logged-in">
@@ -29,8 +28,8 @@
                     </td>
                     <td>
                         <div class="d-flex justify-content-end">
-                            <a href="#" class="btn btn-warning mr-2"><i class="fa-solid fa-pen-to-square mr-2"></i>Edit</a>
-                            <a href="#" class="btn btn-danger"><i class="fa-solid fa-trash mr-2"></i>Delete</a>
+                            <a href="{% url 'updateCategory' category.id %}" class="btn btn-warning mr-2"><i class="fa-solid fa-pen-to-square mr-2"></i>Edit</a>
+                            <a href="{% url 'deleteCategory' category.id %}" class="btn btn-danger"><i class="fa-solid fa-trash mr-2"></i>Delete</a>
                         </div>
                     </td>
                   </tr>
