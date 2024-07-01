@@ -86,8 +86,12 @@ def updateCategory(request, pk=None):
     else:
         category = get_object_or_404(Category, pk=pk)
         form = CategoryForm(instance=category)
-    context = {"form": form}
+    context = {"form": form, "category": category}
     return render(request, "vendor/updateCategory.html", context)
 
-def deleteMenu(request):
-    return render(request, "vendor/deleteMenu.html")
+def deleteCategory(request, pk=None):
+    category = get_object_or_404(Category, pk=pk)    
+    category.delete()
+    messages.success(request, "Category deleted successfully")
+    return redirect("menu")
+        
