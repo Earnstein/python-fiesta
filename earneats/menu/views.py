@@ -25,7 +25,7 @@ def getCategory(request, pk=None):
     category = get_object_or_404(Category, pk=pk)
     food_items = FoodItem.objects.filter(vendor=vendor, category=category)
     context = {"food_items": food_items, "category": category}
-    return render(request, "vendor/getCategory.html", context)
+    return render(request, "vendor/category/getCategory.html", context)
 
 
 @login_required(login_url="login")
@@ -44,7 +44,7 @@ def createCategory(request):
     else:
         form = CategoryForm()
     context = {"form": form}
-    return render(request, "vendor/createCategory.html", context)
+    return render(request, "vendor/category/createCategory.html", context)
 
 
 @login_required(login_url="login")
@@ -54,15 +54,13 @@ def updateCategory(request, pk=None):
     if request.method == "POST":
         form = CategoryForm(request.POST, instance=category)
         if form.is_valid():
-            category = form.save(commit=False)
-            category.vendor = get_vendor(request)
             category.save()
             messages.success(request, "Category updated successfully")
             return redirect("menu")
     else:
         form = CategoryForm(instance=category)
     context = {"form": form, "category": category}
-    return render(request, "vendor/updateCategory.html", context)
+    return render(request, "vendor/category/updateCategory.html", context)
 
 
 @login_required(login_url="login")
@@ -74,11 +72,39 @@ def deleteCategory(request, pk=None):
     return redirect("menu")
         
 
+@login_required(login_url="login")
+@user_passes_test(check_role_vendor)
 def createFood(request):
-    pass
+    if request.method == "POST":
+        form = FoodItemForm(request.POST, request.FILES)
+        if form.is_valid():
+            food_title = form.cleaned_data['food_title']
+            food_form = form.save(commit=False)
+            food_form.vendor = get_vendor(request)
+            food_form.slug = slugify(food_title)
+            food_form.save()
+            messages.success(request, "Food was added successfully")
+            return redirect("menu")
+    form = FoodItemForm()
+    context = {"form": form}
+    return render(request, "vendor/food/createFood.html", context)
 
 def updateFood(request, pk=None):
-    pass
+    food_item = get_object_or_404(FoodItem, pk=pk)
+    if request.method == "POST":
+        form = FoodItemForm(request.POST, request.FILES, instance=food_item)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Item was updated successfully")
+            return redirect("menu")
+        else:
+            print(form.errors)
+    form = FoodItemForm(instance=food_item)
+    context = { "form": form,"food_item": food_item }
+    return render(request, "vendor/food/updateFood.html", context)
 
 def deleteFood(request, pk=None):
-    pass
+    food_item = get_object_or_404(FoodItem, pk=pk)
+    food_item.delete()
+    messages.success(request, f"{food_item.food_title} is succussfully deleted.")
+    return redirect("menu")
