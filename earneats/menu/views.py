@@ -63,6 +63,7 @@ def updateCategory(request, pk=None):
     return render(request, "vendor/category/updateCategory.html", context)
 
 
+
 @login_required(login_url="login")
 @user_passes_test(check_role_vendor)
 def deleteCategory(request, pk=None):
@@ -71,6 +72,7 @@ def deleteCategory(request, pk=None):
     messages.success(request, "Category deleted successfully")
     return redirect("menu")
         
+
 
 @login_required(login_url="login")
 @user_passes_test(check_role_vendor)
@@ -89,6 +91,9 @@ def createFood(request):
     context = {"form": form}
     return render(request, "vendor/food/createFood.html", context)
 
+
+@login_required(login_url="login")
+@user_passes_test(check_role_vendor)
 def updateFood(request, pk=None):
     food_item = get_object_or_404(FoodItem, pk=pk)
     if request.method == "POST":
@@ -103,6 +108,9 @@ def updateFood(request, pk=None):
     context = { "form": form,"food_item": food_item }
     return render(request, "vendor/food/updateFood.html", context)
 
+
+@login_required(login_url="login")
+@user_passes_test(check_role_vendor)
 def deleteFood(request, pk=None):
     food_item = get_object_or_404(FoodItem, pk=pk)
     food_item.delete()
