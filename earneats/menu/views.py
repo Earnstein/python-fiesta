@@ -3,6 +3,7 @@ from django.contrib import messages
 from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils.text import slugify
+from django.db import IntegrityError
 from accounts.utils import check_role_vendor
 from menu.models import Category, FoodItem
 from menu.forms import CategoryForm, FoodItemForm
@@ -31,6 +32,7 @@ def getCategory(request, pk=None):
 @login_required(login_url="login")
 @user_passes_test(check_role_vendor)
 def createCategory(request):
+    form = CategoryForm()
     vendor = get_vendor(request)
     if request.method == "POST":
         form = CategoryForm(request.POST)
@@ -39,12 +41,12 @@ def createCategory(request):
             category = form.save(commit=False)
             category.vendor = vendor
             category.slug = slugify(f'{vendor.vendor_name}-{category_name}')
-            category.save()
-            messages.success(request, "Category created successfully")
-            return redirect('menu')
-        else:
-            print(form.errors)
-    form = CategoryForm()
+            try:
+                category.save()
+                messages.success(request, "Category created successfully")
+                return redirect('menu')
+            except IntegrityError:
+                messages.error(request, f"{category_name} exists")
     context = {"form": form}
     return render(request, "vendor/category/createCategory.html", context)
 
@@ -53,14 +55,13 @@ def createCategory(request):
 @user_passes_test(check_role_vendor)
 def updateCategory(request, pk=None):
     category = get_object_or_404(Category, pk=pk)
+    form = CategoryForm(instance=category)
     if request.method == "POST":
         form = CategoryForm(request.POST, instance=category)
         if form.is_valid():
             category.save()
             messages.success(request, "Category updated successfully")
             return redirect("menu")
-    else:
-        form = CategoryForm(instance=category)
     context = {"form": form, "category": category}
     return render(request, "vendor/category/updateCategory.html", context)
 
@@ -80,6 +81,7 @@ def deleteCategory(request, pk=None):
 @user_passes_test(check_role_vendor)
 def createFood(request):
     vendor = get_vendor(request)
+    form = FoodItemForm(vendor=vendor)
     if request.method == "POST":
         form = FoodItemForm(request.POST, request.FILES)
         if form.is_valid():
@@ -90,8 +92,6 @@ def createFood(request):
             food_form.save()
             messages.success(request, "Food was added successfully")
             return redirect("getCategory", food_form.category.id)
-    form = FoodItemForm()
-    form.fields['category'].queryset = Category.objects.filter(vendor=vendor)
     context = {"form": form}
     return render(request, "vendor/food/createFood.html", context)
 
@@ -100,13 +100,13 @@ def createFood(request):
 @user_passes_test(check_role_vendor)
 def updateFood(request, pk=None):
     food_item = get_object_or_404(FoodItem, pk=pk)
+    form = FoodItemForm(vendor=food_item.vendor, instance=food_item)
     if request.method == "POST":
         form = FoodItemForm(request.POST, request.FILES, instance=food_item)
         if form.is_valid():
             form.save()
             messages.success(request, "Item was updated successfully")
             return redirect("getCategory", food_item.category.id)
-    form = FoodItemForm(instance=food_item)
     context = { "form": form,"food_item": food_item }
     return render(request, "vendor/food/updateFood.html", context)
 
