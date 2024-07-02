@@ -1,0 +1,63 @@
+{% extends 'base.html' %} 
+{% load static %} 
+{% block content %} 
+{% include 'includes/cover.html' %}
+
+<div class="page-section account-header buyer-logged-in">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+        <!-- load a sidebar -->
+        {% include "includes/vendor_sidebar.html" %}
+      </div>
+      <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
+        <div class="user-dashboard loader-holder">
+          <div class="user-holder">
+            <h5 class="text-uppercase"><a onclick=history.back()><i class="fa-solid fa-arrow-left mr-2"></i></a>Update Category</h5>
+            <hr>
+           <form action="{% url 'updateFood' food_item.id %}" method="POST" enctype="multipart/form-data">
+              {% csrf_token %} 
+              <div class="form-fields-set">
+                <ul>
+                 {% for field in form %}
+                 <li>
+                    <div class="row">
+                      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <div class="field-holder">
+                          <label>{{ field.name }}*</label>
+                            {{field}}
+                        </div>
+                      </div>
+                    </div>
+                  </li>
+                 {% endfor %}
+                </ul>
+                <div>
+
+                {% for field in form %}
+                    {% if field.errors %}
+                        {% for error in field.errors  %}
+                        <ul>
+                            <li class="text-danger">{{error}}</li>
+                        </ul>
+                        {% endfor %}
+                    {% endif %}
+                {% endfor %}
+                  <div class="field-holder">
+                    <div class="payment-holder input-button-loader">
+                      <input
+                        type="submit"
+                        value="Add"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+           </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
