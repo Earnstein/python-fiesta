@@ -28,11 +28,18 @@
                               <li class="gal-img">
                                 <div class="drag-list">
                                   <div class="item-thumb">
+                                    {% if profile.profile_picture %}
+                                    <img
+                                    class="thumbnail"
+                                    src={{profile.profile_picture.url}}
+                                    alt="profile picture"
+                                  />     
+                                    {% else %}
                                     <img
                                       class="thumbnail"
-                                      src={{profile.profile_picture.url}}
-                                      alt="profile picture"
+                                      src={% static 'images/gopher.png' %} alt="default-profile-image"
                                     />
+                                    {% endif %}
                                   </div>
                                 </div>
                               </li>
@@ -54,11 +61,18 @@
                               <li class="gal-img">
                                 <div class="drag-list">
                                   <div class="item-thumb">
+                                    {% if profile.cover_picture %}
                                     <img
                                       class="thumbnail"
                                       src={{profile.cover_picture.url}}
                                       alt="cover picture"
+                                    />     
+                                    {% else %}
+                                    <img
+                                      class="thumbnail"
+                                      src={% static 'images/paid.png' %} alt="default-profile-image"
                                     />
+                                    {% endif %}
                                   </div>
                                 </div>
                               </li>
@@ -80,11 +94,18 @@
                               <li class="gal-img">
                                 <div class="drag-list">
                                   <div class="item-thumb">
+                                    {% if vendor.vendor_license %}
                                     <img
                                       class="thumbnail"
                                       src={{vendor.vendor_license.url}}
                                       alt="license"
+                                    />     
+                                    {% else %}
+                                    <img
+                                      class="thumbnail"
+                                      src={% static 'images/default-profile.PNG' %} alt="default-profile-image"
                                     />
+                                    {% endif %}
                                   </div>
                                 </div>
                               </li>

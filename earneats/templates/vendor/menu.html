@@ -18,21 +18,27 @@
                 <a href="{% url 'createCategory' %}" class="btn btn-info float-right m-2"><i class="fa-solid fa-plus mr-2"></i>Add Category</a>
                 <thead>
                 <tbody>
-                  {% for category in categories  %}
-                  <tr>
-                    <th scope="row">{{forloop.counter}}</th>
-                    <td>
-                        <a href="{% url 'getCategory' category.id %}" class="font-weight-bold text-black"><p class="mb-0">{{category.category_name}}</p></a>
-                        <small class="text-muted">{{ category.description }}</small>
-                    </td>
-                    <td>
-                        <div class="d-flex justify-content-end">
-                            <a href="{% url 'updateCategory' category.id %}" class="btn btn-warning mr-2"><i class="fa-solid fa-pen-to-square mr-2"></i>Edit</a>
-                            <a href="{% url 'deleteCategory' category.id %}" class="btn btn-danger"><i class="fa-solid fa-trash mr-2"></i>Delete</a>
-                        </div>
-                    </td>
-                  </tr>
-                  {% endfor %}
+                 {% if categories %}
+                 {% for category in categories %}
+                 <tr>
+                   <th scope="row">{{forloop.counter}}</th>
+                   <td>
+                       <a href="{% url 'getCategory' category.id %}" class="font-weight-bold text-black"><p class="mb-0">{{category.category_name}}</p></a>
+                       <small class="text-muted">{{ category.description }}</small>
+                   </td>
+                   <td>
+                       <div class="d-flex justify-content-end">
+                           <a href="{% url 'updateCategory' category.id %}" class="btn btn-warning mr-2"><i class="fa-solid fa-pen-to-square mr-2"></i>Edit</a>
+                           <a href="{% url 'deleteCategory' category.id %}" class="btn btn-danger"><i class="fa-solid fa-trash mr-2"></i>Delete</a>
+                       </div>
+                   </td>
+                 </tr>
+                 {% endfor %}
+                 {% else %}
+                 <tr>
+                  No Categories Found.
+                 </tr>
+                 {% endif %}
                 </tbody>
               </table>
           </div>
