@@ -1,10 +1,11 @@
 from django.db import models
 from vendor.models import Vendor
+from django.db.models import UniqueConstraint
 
 class Category(models.Model):
     vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE)
-    category_name = models.CharField(max_length=50, unique=True)
-    slug = models.CharField(max_length=100, unique=True)
+    category_name = models.CharField(max_length=50)
+    slug = models.CharField(max_length=100)
     description = models.TextField(max_length=255, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -12,6 +13,11 @@ class Category(models.Model):
     class Meta:
         verbose_name = 'category'
         verbose_name_plural = 'categories'
+        constraints = [
+            UniqueConstraint(fields=['vendor', 'category_name'], name='unique_vendor_category'),
+            UniqueConstraint(fields=['vendor', 'slug'], name='unique_vendor_slug')
+
+        ]
 
     def clean(self):
         self.category_name = self.category_name.capitalize()
