@@ -12,3 +12,9 @@ class FoodItemForm(forms.ModelForm):
     class Meta:
         model = FoodItem
         fields = ['food_title', 'category', 'description', 'price', 'image', 'is_available' ]
+    
+    def __init__(self, *args, **kwargs):
+        vendor = kwargs.pop('vendor', None)
+        super(FoodItemForm, self).__init__(*args, **kwargs)
+        if vendor:
+            self.fields['category'].queryset =  Category.objects.filter(vendor=vendor)
