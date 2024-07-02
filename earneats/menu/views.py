@@ -31,18 +31,20 @@ def getCategory(request, pk=None):
 @login_required(login_url="login")
 @user_passes_test(check_role_vendor)
 def createCategory(request):
+    vendor = get_vendor(request)
     if request.method == "POST":
         form = CategoryForm(request.POST)
         if form.is_valid():
             category_name = form.cleaned_data["category_name"]
             category = form.save(commit=False)
-            category.vendor = get_vendor(request)
-            category.slug = slugify(category_name)
+            category.vendor = vendor
+            category.slug = slugify(f'{vendor.vendor_name}-{category_name}')
             category.save()
             messages.success(request, "Category created successfully")
-            return redirect("menu")
-    else:
-        form = CategoryForm()
+            return redirect('menu')
+        else:
+            print(form.errors)
+    form = CategoryForm()
     context = {"form": form}
     return render(request, "vendor/category/createCategory.html", context)
 
@@ -77,17 +79,19 @@ def deleteCategory(request, pk=None):
 @login_required(login_url="login")
 @user_passes_test(check_role_vendor)
 def createFood(request):
+    vendor = get_vendor(request)
     if request.method == "POST":
         form = FoodItemForm(request.POST, request.FILES)
         if form.is_valid():
             food_title = form.cleaned_data['food_title']
             food_form = form.save(commit=False)
-            food_form.vendor = get_vendor(request)
+            food_form.vendor = vendor
             food_form.slug = slugify(food_title)
             food_form.save()
             messages.success(request, "Food was added successfully")
-            return redirect("menu")
+            return redirect("getCategory", food_form.category.id)
     form = FoodItemForm()
+    form.fields['category'].queryset = Category.objects.filter(vendor=vendor)
     context = {"form": form}
     return render(request, "vendor/food/createFood.html", context)
 
@@ -101,9 +105,7 @@ def updateFood(request, pk=None):
         if form.is_valid():
             form.save()
             messages.success(request, "Item was updated successfully")
-            return redirect("menu")
-        else:
-            print(form.errors)
+            return redirect("getCategory", food_item.category.id)
     form = FoodItemForm(instance=food_item)
     context = { "form": form,"food_item": food_item }
     return render(request, "vendor/food/updateFood.html", context)
