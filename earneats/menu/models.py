@@ -3,7 +3,7 @@ from vendor.models import Vendor
 from django.db.models import UniqueConstraint
 
 class Category(models.Model):
-    vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE)
+    vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE, related_name="category")
     category_name = models.CharField(max_length=50)
     slug = models.CharField(max_length=100)
     description = models.TextField(max_length=255, blank=True)
