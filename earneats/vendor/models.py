@@ -1,6 +1,13 @@
 from django.db import models
+from django.db.models import QuerySet
 from accounts.models import User , UserProfile
 from accounts.utils import send_vendor_approval_email
+
+
+class ApprovedManager(models.Manager):
+    def get_queryset(self) -> QuerySet['Vendor']:
+        return super().get_queryset().filter(is_approved=True, user__is_active=True)
+
 
 class Vendor(models.Model):
     user = models.OneToOneField(User, related_name="user", on_delete=models.CASCADE)
@@ -10,6 +17,9 @@ class Vendor(models.Model):
     is_approved = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
+
+    objects = models.Manager()
+    approved = ApprovedManager()
 
     def save(self, *args, **kwargs):
         # UPDATE
