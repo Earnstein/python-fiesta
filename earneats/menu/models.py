@@ -5,7 +5,7 @@ from django.db.models import UniqueConstraint
 class Category(models.Model):
     vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE, related_name="category")
     category_name = models.CharField(max_length=50)
-    slug = models.CharField(max_length=100)
+    slug = models.CharField(max_length=100, unique=True)
     description = models.TextField(max_length=255, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -14,9 +14,7 @@ class Category(models.Model):
         verbose_name = 'category'
         verbose_name_plural = 'categories'
         constraints = [
-            UniqueConstraint(fields=['vendor', 'category_name'], name='unique_vendor_category'),
-            UniqueConstraint(fields=['vendor', 'slug'], name='unique_vendor_slug')
-
+            UniqueConstraint(fields=['vendor', 'category_name'], name='unique_vendor_category')
         ]
 
     def clean(self):
