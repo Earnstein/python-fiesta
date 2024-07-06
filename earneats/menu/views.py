@@ -40,7 +40,7 @@ def createCategory(request):
             category_name = form.cleaned_data["category_name"]
             category = form.save(commit=False)
             category.vendor = vendor
-            category.slug = slugify(f'{vendor.vendor_name}-{category_name}')
+            category.slug = slugify(f'{vendor.vendor_name} {category.id}')
             try:
                 category.save()
                 messages.success(request, "Category created successfully")
