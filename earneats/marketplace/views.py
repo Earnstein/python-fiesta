@@ -14,3 +14,10 @@ def marketplace(request):
         vendors = paginator.page(1)
     context = {"vendors":vendors}
     return render(request, 'marketplace/listings.html', context)
+
+
+def vendor_detail(request, vendor_slug):
+    vendor = Vendor.approved.get(vendor_slug=vendor_slug)
+    categories = vendor.category.all()
+    context = {"vendor":vendor, "categories":categories}
+    return render(request, 'marketplace/vendor_detail.html', context)
