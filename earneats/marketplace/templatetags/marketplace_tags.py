@@ -1,6 +1,7 @@
 from django import template
 from vendor.models import Vendor
 from ..models import Cart
+from ..utils import get_total_cart_quantity
 
 register = template.Library()
 
@@ -13,6 +14,4 @@ def total_vendors():
 @register.simple_tag(name='total_cart_quantity')
 def total_cart_quantity(user):
     """Returns the total quantity of items in the user's cart."""
-    cart_items = Cart.objects.filter(user=user)
-    total_quantity = sum(cart_item.quantity for cart_item in cart_items)
-    return total_quantity
+    return get_total_cart_quantity(user)
