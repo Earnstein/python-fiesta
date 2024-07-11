@@ -6,7 +6,7 @@ from django.http import HttpResponse, JsonResponse
 from vendor.models import Vendor
 from menu.models import Category, FoodItem
 from .models import Cart
-from .utils import is_ajax
+from .utils import is_ajax, get_total_cart_quantity
 
 def marketplace(request):
     vendor_list = Vendor.approved.all().order_by("vendor_name")
@@ -54,8 +54,8 @@ def add_to_cart(request, food_id):
     if not created:
         cart.quantity += 1
         cart.save()
-
-    return JsonResponse({"status": "success", "message": f"{food_item.food_title} added to cart successfully"})
+    total_quantity = get_total_cart_quantity(request.user)
+    return JsonResponse({"status": "success", "message": f"{food_item.food_title} added to cart successfully", "total_quantity": total_quantity, "qty": cart.quantity})
 
 
 def remove_from_cart(request, food_id):
@@ -80,4 +80,5 @@ def remove_from_cart(request, food_id):
     else:
         cart.delete()
 
-    return JsonResponse({"status": "success", "message": f"{food_item.food_title} removed from cart successfully"})
+    total_quantity = get_total_cart_quantity(request.user)
+    return JsonResponse({"status": "success", "message": f"{food_item.food_title} removed from cart successfully", "total_quantity": total_quantity})
