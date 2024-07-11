@@ -35,6 +35,7 @@ def vendor_detail(request, vendor_slug):
     context = {"vendor": vendor, "categories": categories, "cart_items": cart_items}
     return render(request, "marketplace/vendor_detail.html", context)
 
+
 def add_to_cart(request, food_id):
     if not request.user.is_authenticated:
         return JsonResponse({"status": "failed", "message": "Please log in to proceed"})
@@ -70,7 +71,7 @@ def remove_from_cart(request, food_id):
 
     cart = Cart.objects.filter(user=request.user, fooditem=food_item).first()
 
-    if cart is None:
+    if not cart:
         return JsonResponse({"status": "success", "message": "Your cart is empty"})
     
     if cart and cart.quantity > 1:
