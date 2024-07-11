@@ -117,15 +117,25 @@
                                                 <div class="text-holder">
                                                     <h6>{{ food.food_title }}</h6>
                                                     <span>{{ food.description }}</span>
+                                                    <span class="price">${{ food.price }}</span>
                                                 </div>
                                                 <div class="price-holder">
-                                                    <span class="price">${{ food.price }}</span>
-                                                    <a href="#" class="restaurant-add-menu-btn"><i class="icon-plus4 text-color"></i></a>
+                                                   {% for cart in cart_items  %}
+                                                        {% if cart.fooditem == food and cart.quantity > 1 %}
+                                                        <span class="qty">{{ cart.quantity }}</span>
+                                                        {% else %}
+                                                        <span class="qty">0</span>
+                                                        {% endif %}
+                                                   {% endfor %}
+                                                    <a href="#" class="add_to_cart" data-id="{{food.id}}" data-url="{% url 'add_to_cart' food.id %}"><i class="icon-plus4 text-color"></i></a>
+                                                    <a href="#" class="remove_from_cart" data-id="{{food.id}}" data-url="{% url 'remove_from_cart' food.id %}"><i class="icon-minus text-color"></i></a>
                                                     <span id="add-menu-loader-10"></span>
                                                 </div>
                                             </li>
                                             {% endfor %}
                                         </ul>
+                                        {% empty %}
+                                        <p class="menu-category-link">This vendor has not updated their menu</p>
                                         {% endfor %}
                                     </div>
                                 </div>
