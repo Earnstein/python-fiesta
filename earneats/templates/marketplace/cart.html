@@ -1,5 +1,87 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
-yay
+<div class="page-section pt-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-7 col-md-7 col-sm-7 col-xs-12">
+                <div class="tabs-holder horizontal">
+                    <ul class="stickynav-tabs nav nav-tabs">
+                        <li class="active"><a data-toggle="tab" href="#home"><i class="fa fa-cart-shopping"></i>Cart items</a></li>
+                        
+                    </ul>
+                    <div class="tab-content">
+                        <div id="home" class="tab-pane in active">
+                            <div class="menu-itam-holder">
+                                <div id="menu-item-list-6272" class="menu-itam-list">
+                                    <ul>
+                                        {%for item in carts %}
+                                        <li>
+                                            <div class="image-holder"> <a href="{{item.fooditem.image.url}}"><img src="{{item.fooditem.image.url}}" alt=""></a></div>
+                                            <div class="text-holder">
+                                                <h6>{{ item.fooditem }}</h6>
+                                                <span>{{ item.fooditem.description }}</span>
+                                                <span class="price">${{ item.fooditem.price }}</span>
+                                            </div>
+                                            <div class="price-holder">
+                                                <span class="item_qty" id="qty-{{item.fooditem.id}}">
+                                                    {{item.quantity}}
+                                                </span>     
+                                                <a href="#" class="add_to_cart" data-id="{{item.fooditem.id}}" data-url="{% url 'add_to_cart' item.fooditem.id %}"><i class="icon-plus4 text-color"></i></a>
+                                                <a href="#" class="remove_from_cart" data-id="{{item.fooditem.id}}" data-url="{% url 'remove_from_cart' item.fooditem.id %}"><i class="icon-minus text-color"></i></a>
+                                                <a href="#" class="delete_cart" data-id="{{item.id}}" data-url="{% url 'delete_cart' item.id %}"><i class="icon-delete text-color"></i></a>
+                                            </div>
+                                        </li>
+                                        {% empty %}
+                                        <p>No items in cart</p>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+            
+            {% comment %} ORDER SUMMARY {% endcomment %}
+            <div class="col-lg-5 col-md-5 col-sm-5 col-xs-12">
+                <div class="tabs-holder horizontal">
+                    <ul class="stickynav-tabs nav nav-tabs">
+                        <li class="active"><a data-toggle="tab" href="#home"><i class="icon- icon-room_service"></i>Your Order</a></li>
+                        
+                    </ul>
+                    <div class="tab-content">
+                        <div id="home" class="tab-pane in active">
+                            <div class="menu-itam-holder">
+                                <div>
+                                    <ul>
+                                        <li class="list-unstyled">
+                                            subtotal
+                                            <span class="price float-right fw-bolder">
+                                                {% for item in carts  %}
+                                                ${{item.fooditem.price}} * {{ item.quantity}}
+                                                {% endfor %}
+                                            </span>
+                                        </li>
+                                        <li class="list-unstyled">
+                                            tax
+                                        </li>
+                                        <li class="list-unstyled">
+                                            delivery fee
+                                        </li>
+                                        <li class="list-unstyled">
+                                            total
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
