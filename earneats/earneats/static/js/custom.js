@@ -68,13 +68,41 @@ $(document).ready(function () {
       type: "GET",
       url: url,
       data: data,
-      success: function (data) {
-        console.log(data);
+      success: function (response) {
+        const {
+          status,
+          message,
+          total_quantity: totalQuantity,
+          qty: foodQuantity,
+        } = response;
+        if (status === "failed") {
+          swal({
+            text: message,
+            icon: "info",
+            timer: 2000,
+          }).then(() => {
+            window.location = "/login";
+          });
+        } else {
+          $("#cart_counter").text(totalQuantity);
+          $(`#qty-${food_id}`).text(foodQuantity);
+          swal({
+            text: message,
+            icon: "success",
+            timer: 1000,
+          });
+        }
+      },
+      error: function () {
+        swal({
+          text: "Something went wrong, try again.",
+          icon: "error",
+          timer: 2000,
+        });
       },
     });
   });
 });
-
 
 $(document).ready(function () {
   $(".remove_from_cart").click(function (event) {
@@ -86,8 +114,37 @@ $(document).ready(function () {
       type: "GET",
       url: url,
       data: data,
-      success: function (data) {
-        console.log(data);
+      success: function (response) {
+        const {
+          status,
+          message,
+          total_quantity: totalQuantity,
+          qty: foodQuantity,
+        } = response;
+        if (status === "failed") {
+          swal({
+            text: message,
+            icon: "info",
+            timer: 2000,
+          }).then(() => {
+            window.location = "/login";
+          });
+        } else {
+          $("#cart_counter").text(totalQuantity);
+          $(`#qty-${food_id}`).text(foodQuantity);
+          swal({
+            text: message,
+            icon: "success",
+            timer: 1000,
+          });
+        }
+      },
+      error: function () {
+        swal({
+          text: "Something went wrong, try again.",
+          icon: "error",
+          timer: 2000,
+        });
       },
     });
   });
