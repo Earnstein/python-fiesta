@@ -3,7 +3,7 @@
 {% load static %}
 {% block content %}
 <div class="main-section">
-    <div class="page-section nopadding cs-nomargin" style="margin-top: 0px;padding-top: 80px;padding-bottom: 60px;margin-bottom: 0px;background: url({% static 'extra-images/banner-img-2.jpg' %}) no-repeat center top / cover;">
+    <div class="page-section nopadding cs-nomargin" style="margin-top: 0px;padding-top: 80px;padding-bottom: 60px;margin-bottom: 0px;background: url({% static 'images/default-cover.PNG' %}) no-repeat center top / cover;">
         <!-- Container Start -->
         <div class="container ">
             <div class="row">
@@ -112,7 +112,7 @@
                                         {% if vendor.user_profile.profile_picture %}
                                         <a href="#"><img src={{ vendor.user_profile.profile_picture.url }} class="attachment-full size-full wp-post-image" alt="{{vendor.vendor_name}}"></a>
                                         {% else %}
-                                        <a href="#"><img src="{% static 'extra-images/listing-logo18.png' %}" class="attachment-full size-full wp-post-image" alt="{{vendor.vendor_name}}"></a>
+                                        <a href="#"><img src="{% static 'images/default-profile.PNG' %}" class="attachment-full size-full wp-post-image" alt="{{vendor.vendor_name}}"></a>
                                         {% endif %}
                                     </figure>
                                     <span class="restaurant-status close"><em class="bookmarkRibbon"></em>Close</span>
