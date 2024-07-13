@@ -120,13 +120,13 @@
                                                     <span class="price">${{ food.price }}</span>
                                                 </div>
                                                 <div class="price-holder">
-                                                   {% for cart in cart_items  %}
-                                                        {% if cart.fooditem == food and cart.quantity > 1 %}
-                                                        <span class="qty">{{ cart.quantity }}</span>
-                                                        {% else %}
-                                                        <span class="qty">0</span>
-                                                        {% endif %}
-                                                   {% endfor %}
+                                                    <span class="item_qty" id="qty-{{food.id}}">
+                                                        {% for cart in cart_items  %}
+                                                            {% if food == cart.fooditem %}
+                                                                {{cart.quantity}}
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    </span>     
                                                     <a href="#" class="add_to_cart" data-id="{{food.id}}" data-url="{% url 'add_to_cart' food.id %}"><i class="icon-plus4 text-color"></i></a>
                                                     <a href="#" class="remove_from_cart" data-id="{{food.id}}" data-url="{% url 'remove_from_cart' food.id %}"><i class="icon-minus text-color"></i></a>
                                                     <span id="add-menu-loader-10"></span>
