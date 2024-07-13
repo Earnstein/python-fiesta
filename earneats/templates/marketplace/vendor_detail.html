@@ -17,7 +17,7 @@
                                     {% if vendor.user_profile.profile_picture %}
                                    <img src={{ vendor.user_profile.profile_picture.url }} class="attachment-full size-full wp-post-image" alt="{{vendor.vendor_name}}">
                                     {% else %}
-                                    <img src="{% static 'extra-images/listing-logo18.png' %}" class="attachment-full size-full wp-post-image" alt="{{vendor.vendor_name}}">
+                                    <img src="{% static 'images/default-profile.PNG' %}" class="attachment-full size-full wp-post-image" alt="{{vendor.vendor_name}}">
                                     {% endif %}
                                 </figure>
                             </div>
@@ -73,7 +73,7 @@
         <!-- Container End -->
     </div>
 
-    <div class="page-section">
+    <div class="page-section pt-5">
         <div class="container">
             <div class="row">
                 <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12 sticky-sidebar">
