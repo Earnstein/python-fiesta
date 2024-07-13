@@ -31,7 +31,7 @@
                         <div class="login-option">
                             {% if user.is_authenticated %}
                             <span>
-                                <a class="" href="#" style="font-size: 12px;">
+                                <a href="{% url 'cart' %}" style="font-size: 12px;">
                                     <i class="fa fa-shopping-cart text-danger"></i>
                                     <span class="badge badge-warning" id="cart_counter" style="position: relative; bottom: 10px; border-radius: 50px;">{% total_cart_quantity user %}</span>
                                 </a>
