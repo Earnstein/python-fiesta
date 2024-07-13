@@ -149,3 +149,48 @@ $(document).ready(function () {
     });
   });
 });
+
+$(document).ready(function(){
+  $(".delete_cart").click(function (event) {
+    event.preventDefault();
+    cart_id = $(this).data("id")
+    data = { cart_id: cart_id };
+    url = $(this).data("url");
+    $.ajax({
+      type: "GET",
+      url: url,
+      data: data,
+      success: function (response) {
+        const {
+          status,
+          message,
+          total_quantity: totalQuantity,
+         
+        } = response;
+        if (status === "failed") {
+          swal({
+            text: message,
+            icon: "info",
+            timer: 2000,
+          })
+        } else {
+          $("#cart_counter").text(totalQuantity);
+          swal({
+            text: message,
+            icon: "success",
+            timer: 1000,
+          }).then(() => {
+            location.reload();
+          });
+        }
+      },
+      error: function () {
+        swal({
+          text: "Something went wrong, try again.",
+          icon: "error",
+          timer: 2000,
+        });
+      },
+    });
+  });
+})
