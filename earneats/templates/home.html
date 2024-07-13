@@ -157,7 +157,7 @@
 									<div class="text-holder">
 										<div class="post-title">
 											<h5>
-												<a href="#">{{vendor.vendor_name}}</a>
+												<a  href="{% url 'vendor_detail' vendor.vendor_slug %}">{{vendor.vendor_name}}</a>
 											</h5>
 										</div>
 										{% if vendor.user_profile.pin_code and vendor.user_profile.city and vendor.user_profile.state and vendor.user_profile.country  %}
