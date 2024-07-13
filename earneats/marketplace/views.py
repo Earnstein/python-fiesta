@@ -88,4 +88,25 @@ def remove_from_cart(request, food_id):
 
 
 def cart(request):
-    return render(request, "marketplace/cart.html")
+    carts = Cart.objects.filter(user=request.user) if request.user.is_authenticated else None
+    print(carts)
+    context = {"carts": carts}
+    return render(request, "marketplace/cart.html", context)
+
+
+def delete_cart(request, cart_id):
+    """View to delete a cart item."""
+    if not request.user.is_authenticated:
+        return JsonResponse({"status": FAILED, "message": "Please log in to proceed"})
+
+    if not is_ajax(request):
+        return JsonResponse({"status": FAILED, "message": "Invalid request"})
+
+    cart_item = Cart.objects.filter(user=request.user, id=cart_id).first()
+
+    if cart_item is None:
+        return JsonResponse({"status": SUCCESS, "message": "Cart item does not exist"})
+
+    cart_item.delete()
+    total_quantity = get_total_cart_quantity(request.user)
+    return JsonResponse({"status": SUCCESS, "message": "Cart item deleted successfully", "total_quantity": total_quantity})
