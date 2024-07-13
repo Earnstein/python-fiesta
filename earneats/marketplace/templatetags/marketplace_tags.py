@@ -1,6 +1,5 @@
 from django import template
 from vendor.models import Vendor
-from ..models import Cart
 from ..utils import get_total_cart_quantity
 
 register = template.Library()
