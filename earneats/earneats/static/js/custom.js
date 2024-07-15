@@ -1,5 +1,10 @@
 let autocomplete;
 
+function clearCart(qty, cart_id) {
+  if (qty <= 0) {
+    document.getElementById(`qty-${cart_id}`).remove();
+  }
+}
 function initAutoComplete() {
   autocomplete = new google.maps.places.Autocomplete(
     document.getElementById("id_address"),
@@ -74,6 +79,9 @@ $(document).ready(function () {
           message,
           total_quantity: totalQuantity,
           qty: foodQuantity,
+          subtotal,
+          tax,
+          total,
         } = response;
         if (status === "failed") {
           swal({
@@ -86,6 +94,9 @@ $(document).ready(function () {
         } else {
           $("#cart_counter").text(totalQuantity);
           $(`#qty-${food_id}`).text(foodQuantity);
+          $("#subtotal").text(`$ ${subtotal}`);
+          $("#tax").text(`$ ${tax}`);
+          $("#total").text(`$ ${total}`);
           swal({
             text: message,
             icon: "success",
@@ -120,22 +131,28 @@ $(document).ready(function () {
           message,
           total_quantity: totalQuantity,
           qty: foodQuantity,
+          subtotal,
+          tax,
+          total,
         } = response;
-        if (status === "failed") {
+        if (status === "success") {
+          $("#cart_counter").text(totalQuantity);
+          $(`#qty-${food_id}`).text(foodQuantity);
+          $("#subtotal").text(`$ ${subtotal}`);
+          $("#tax").text(`$ ${tax}`);
+          $("#total").text(`$ ${total}`);
+          swal({
+            text: message,
+            icon: "success",
+            timer: 1000,
+          });
+        } else {
           swal({
             text: message,
             icon: "info",
             timer: 2000,
           }).then(() => {
             window.location = "/login";
-          });
-        } else {
-          $("#cart_counter").text(totalQuantity);
-          $(`#qty-${food_id}`).text(foodQuantity);
-          swal({
-            text: message,
-            icon: "success",
-            timer: 1000,
           });
         }
       },
@@ -150,10 +167,10 @@ $(document).ready(function () {
   });
 });
 
-$(document).ready(function(){
+$(document).ready(function () {
   $(".delete_cart").click(function (event) {
     event.preventDefault();
-    cart_id = $(this).data("id")
+    cart_id = $(this).data("id");
     data = { cart_id: cart_id };
     url = $(this).data("url");
     $.ajax({
@@ -165,22 +182,27 @@ $(document).ready(function(){
           status,
           message,
           total_quantity: totalQuantity,
-         
+          subtotal,
+          tax,
+          total,
         } = response;
-        if (status === "failed") {
-          swal({
-            text: message,
-            icon: "info",
-            timer: 2000,
-          })
-        } else {
+        if (status === "success") {
           $("#cart_counter").text(totalQuantity);
+          $("#subtotal").text(`$ ${subtotal}`);
+          $("#tax").text(`$ ${tax}`);
+          $("#total").text(`$ ${total}`);
           swal({
             text: message,
             icon: "success",
             timer: 1000,
           }).then(() => {
-            location.reload();
+            clearCart(0, cart_id);
+          });
+        } else {
+          swal({
+            text: message,
+            icon: "info",
+            timer: 2000,
           });
         }
       },
@@ -193,4 +215,4 @@ $(document).ready(function(){
       },
     });
   });
-})
+});
