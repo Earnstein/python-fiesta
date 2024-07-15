@@ -3,10 +3,11 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import get_object_or_404
 from django.db.models import Prefetch
 from django.http import JsonResponse
+from django.contrib.auth.decorators import login_required
 from vendor.models import Vendor
 from menu.models import FoodItem
 from .models import Cart
-from .utils import is_ajax, get_total_cart_quantity
+from .utils import is_ajax, get_total_cart_quantity, get_total_cart_price
 
 SUCCESS = "success"
 FAILED = "failed"
@@ -59,7 +60,8 @@ def add_to_cart(request, food_id):
         cart.quantity += 1
         cart.save()
     total_quantity = get_total_cart_quantity(request.user)
-    return JsonResponse({"status": SUCCESS, "message": f"{food_item.food_title} added to cart successfully", "total_quantity": total_quantity, "qty": cart.quantity})
+    subtotal, tax, total =  get_total_cart_price(request.user).values()
+    return JsonResponse({"status": SUCCESS, "message": f"{food_item.food_title} added to cart successfully", "total_quantity": total_quantity, "qty": cart.quantity, "subtotal": subtotal, "tax": tax, "total": total})
 
 
 def remove_from_cart(request, food_id):
@@ -76,20 +78,21 @@ def remove_from_cart(request, food_id):
     cart = Cart.objects.filter(user=request.user, fooditem=food_item).first()
 
     if not cart or cart.quantity == 0:
+        subtotal, tax, total =  get_total_cart_price(request.user).values()
         cart.delete()
-        return JsonResponse({"status": SUCCESS, "message": "Your cart is empty"})
+        return JsonResponse({"status": SUCCESS, "message": "Your cart is empty", "subtotal": subtotal, "tax": tax, "total": total})
     
     if cart and cart.quantity > 0:
         cart.quantity -= 1
         cart.save()
-
     total_quantity = get_total_cart_quantity(request.user)
-    return JsonResponse({"status": SUCCESS, "message": f"{food_item.food_title} removed from cart successfully", "total_quantity": total_quantity, "qty": cart.quantity})
+    subtotal, tax, total =  get_total_cart_price(request.user).values()
+    return JsonResponse({"status": SUCCESS, "message": f"{food_item.food_title} removed from cart successfully", "total_quantity": total_quantity, "qty": cart.quantity, "subtotal": subtotal, "tax": tax, "total": total})
 
 
+@login_required(login_url="login")
 def cart(request):
-    carts = Cart.objects.filter(user=request.user) if request.user.is_authenticated else None
-    print(carts)
+    carts = Cart.objects.filter(user=request.user).order_by("-created_at") if request.user.is_authenticated else None
     context = {"carts": carts}
     return render(request, "marketplace/cart.html", context)
 
@@ -109,4 +112,5 @@ def delete_cart(request, cart_id):
 
     cart_item.delete()
     total_quantity = get_total_cart_quantity(request.user)
-    return JsonResponse({"status": SUCCESS, "message": "Cart item deleted successfully", "total_quantity": total_quantity})
+    subtotal, tax, total =  get_total_cart_price(request.user).values()
+    return JsonResponse({"status": SUCCESS, "message": "Cart item deleted successfully", "total_quantity": total_quantity, "subtotal": subtotal, "tax": tax, "total": total})
