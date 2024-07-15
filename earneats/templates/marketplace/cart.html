@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load marketplace_tags %}
 {% load static %}
 {% block content %}
 <div class="page-section pt-5">
@@ -16,24 +17,25 @@
                                 <div id="menu-item-list-6272" class="menu-itam-list">
                                     <ul>
                                         {%for item in carts %}
-                                        <li>
+                                        <li id="qty-{{item.id}}">
                                             <div class="image-holder"> <a href="{{item.fooditem.image.url}}"><img src="{{item.fooditem.image.url}}" alt=""></a></div>
                                             <div class="text-holder">
                                                 <h6>{{ item.fooditem }}</h6>
                                                 <span>{{ item.fooditem.description }}</span>
                                                 <span class="price">${{ item.fooditem.price }}</span>
+                                                <a href="{% url 'vendor_detail' item.fooditem.vendor.vendor_slug  %}" class="badge badge-warning">{{item.fooditem.vendor}}</a>
                                             </div>
                                             <div class="price-holder">
                                                 <span class="item_qty" id="qty-{{item.fooditem.id}}">
                                                     {{item.quantity}}
                                                 </span>     
                                                 <a href="#" class="add_to_cart" data-id="{{item.fooditem.id}}" data-url="{% url 'add_to_cart' item.fooditem.id %}"><i class="icon-plus4 text-color"></i></a>
-                                                <a href="#" class="remove_from_cart" data-id="{{item.fooditem.id}}" data-url="{% url 'remove_from_cart' item.fooditem.id %}"><i class="icon-minus text-color"></i></a>
+                                                <a href="#" disabled="true" class="remove_from_cart" id="{{item.id}}" data-id="{{item.fooditem.id}}" data-url="{% url 'remove_from_cart' item.fooditem.id %}"><i class="icon-minus text-color"></i></a>
                                                 <a href="#" class="delete_cart" data-id="{{item.id}}" data-url="{% url 'delete_cart' item.id %}"><i class="icon-delete text-color"></i></a>
                                             </div>
                                         </li>
                                         {% empty %}
-                                        <p>No items in cart</p>
+                                        <p class="text-center fw-bold fs-6 p-lg-4 p-2">No items in cart</p>
                                         {% endfor %}
                                     </ul>
                                 </div>
@@ -56,23 +58,15 @@
                             <div class="menu-itam-holder">
                                 <div>
                                     <ul>
+                                        {% cart_total user as my_dict %}
+                                        {% for key, value in my_dict.items %}
                                         <li class="list-unstyled">
-                                            subtotal
-                                            <span class="price float-right fw-bolder">
-                                                {% for item in carts  %}
-                                                ${{item.fooditem.price}} * {{ item.quantity}}
-                                                {% endfor %}
+                                            {{key}}
+                                            <span class="price float-right fw-bolder" id="{{key}}">
+                                                ${{value|floatformat:2}}
                                             </span>
                                         </li>
-                                        <li class="list-unstyled">
-                                            tax
-                                        </li>
-                                        <li class="list-unstyled">
-                                            delivery fee
-                                        </li>
-                                        <li class="list-unstyled">
-                                            total
-                                        </li>
+                                        {% endfor %}
                                     </ul>
                                 </div>
                             </div>
