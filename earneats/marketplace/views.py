@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import get_object_or_404
 from django.db.models import Prefetch
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.contrib.auth.decorators import login_required
 from vendor.models import Vendor
 from menu.models import FoodItem
@@ -114,3 +114,16 @@ def delete_cart(request, cart_id):
     total_quantity = get_total_cart_quantity(request.user)
     subtotal, tax, total =  get_total_cart_price(request.user).values()
     return JsonResponse({"status": SUCCESS, "message": "Cart item deleted successfully", "total_quantity": total_quantity, "subtotal": subtotal, "tax": tax, "total": total})
+
+
+def search(request):
+    address = request.GET.get("address")
+    latitude = request.GET.get("lat")
+    longitude = request.GET.get("lng")
+    radius = request.GET.get("radius")
+    search_title = request.GET.get("search_title")
+
+    vendors = Vendor.approved.filter(vendor_name__icontains=search_title, user__is_active=True)
+    count = vendors.count()
+    context = {"vendors": vendors, "count":count}
+    return render(request, "marketplace/listings.html", context)
