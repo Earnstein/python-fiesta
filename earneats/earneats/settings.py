@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     "vendor.apps.VendorConfig",
     "menu.apps.MenuConfig",
     "marketplace.apps.MarketplaceConfig",
+    "django.contrib.postgres",
 ]
 
 MIDDLEWARE = [
