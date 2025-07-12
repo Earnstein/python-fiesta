@@ -1,81 +1,115 @@
-{% extends 'base.html' %}
-{% load marketplace_tags %}
-{% load static %}
+{% extends 'base.html' %} 
+{% load marketplace_tags %} 
+{% load static %} 
 {% block content %}
 <div class="page-section pt-5">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-7 col-md-7 col-sm-7 col-xs-12">
-                <div class="tabs-holder horizontal">
-                    <ul class="stickynav-tabs nav nav-tabs">
-                        <li class="active"><a data-toggle="tab" href="#home"><i class="fa fa-cart-shopping"></i>Cart items</a></li>
-                        
-                    </ul>
-                    <div class="tab-content">
-                        <div id="home" class="tab-pane in active">
-                            <div class="menu-itam-holder">
-                                <div id="menu-item-list-6272" class="menu-itam-list">
-                                    <ul>
-                                        {%for item in carts %}
-                                        <li id="qty-{{item.id}}">
-                                            <div class="image-holder"> <a href="{{item.fooditem.image.url}}"><img src="{{item.fooditem.image.url}}" alt=""></a></div>
-                                            <div class="text-holder">
-                                                <h6>{{ item.fooditem }}</h6>
-                                                <span>{{ item.fooditem.description }}</span>
-                                                <span class="price">${{ item.fooditem.price }}</span>
-                                                <a href="{% url 'vendor_detail' item.fooditem.vendor.vendor_slug  %}" class="badge badge-warning">{{item.fooditem.vendor}}</a>
-                                            </div>
-                                            <div class="price-holder">
-                                                <span class="item_qty" id="qty-{{item.fooditem.id}}">
-                                                    {{item.quantity}}
-                                                </span>     
-                                                <a href="#" class="add_to_cart" data-id="{{item.fooditem.id}}" data-url="{% url 'add_to_cart' item.fooditem.id %}"><i class="icon-plus4 text-color"></i></a>
-                                                <a href="#" disabled="true" class="remove_from_cart" id="{{item.id}}" data-id="{{item.fooditem.id}}" data-url="{% url 'remove_from_cart' item.fooditem.id %}"><i class="icon-minus text-color"></i></a>
-                                                <a href="#" class="delete_cart" data-id="{{item.id}}" data-url="{% url 'delete_cart' item.id %}"><i class="icon-delete text-color"></i></a>
-                                            </div>
-                                        </li>
-                                        {% empty %}
-                                        <p class="text-center fw-bold fs-6 p-lg-4 p-2">No items in cart</p>
-                                        {% endfor %}
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        
-                    </div>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-7 col-md-7 col-sm-7 col-xs-12">
+        <div class="tabs-holder horizontal">
+          <ul class="stickynav-tabs nav nav-tabs">
+            <li class="active">
+              <a data-toggle="tab" href="#home"
+                ><i class="fa fa-cart-shopping"></i>Cart items</a
+              >
+            </li>
+          </ul>
+          <div class="tab-content">
+            <div id="home" class="tab-pane in active">
+              <div class="menu-itam-holder">
+                <div id="menu-item-list-6272" class="menu-itam-list">
+                  <ul>
+                    {%for item in carts %}
+                    <li id="qty-{{item.id}}">
+                      <div class="image-holder">
+                        <a href="{{item.fooditem.image.url}}"
+                          ><img src="{{item.fooditem.image.url}}" alt=""
+                        /></a>
+                      </div>
+                      <div class="text-holder">
+                        <h6>{{ item.fooditem }}</h6>
+                        <span>{{ item.fooditem.description }}</span>
+                        <span class="price">${{ item.fooditem.price }}</span>
+                        <a
+                          href="{% url 'vendor_detail' item.fooditem.vendor.vendor_slug  %}"
+                          class="badge badge-warning"
+                          >{{item.fooditem.vendor}}</a
+                        >
+                      </div>
+                      <div class="price-holder">
+                        <span class="item_qty" id="qty-{{item.fooditem.id}}">
+                          {{item.quantity}}
+                        </span>
+                        <a
+                          href="#"
+                          class="add_to_cart"
+                          data-id="{{item.fooditem.id}}"
+                          data-url="{% url 'add_to_cart' item.fooditem.id %}"
+                          ><i class="icon-plus4 text-color"></i
+                        ></a>
+                        <a
+                          href="#"
+                          disabled="true"
+                          class="remove_from_cart"
+                          id="{{item.id}}"
+                          data-id="{{item.fooditem.id}}"
+                          data-url="{% url 'remove_from_cart' item.fooditem.id %}"
+                          ><i class="icon-minus text-color"></i
+                        ></a>
+                        <a
+                          href="#"
+                          class="delete_cart"
+                          data-id="{{item.id}}"
+                          data-url="{% url 'delete_cart' item.id %}"
+                          ><i class="icon-delete text-color"></i
+                        ></a>
+                      </div>
+                    </li>
+                    {% empty %}
+                    <p class="text-center fw-bold fs-6 p-lg-4 p-2">
+                      No items in cart
+                    </p>
+                    {% endfor %}
+                  </ul>
                 </div>
+              </div>
             </div>
-            
-            {% comment %} ORDER SUMMARY {% endcomment %}
-            <div class="col-lg-5 col-md-5 col-sm-5 col-xs-12">
-                <div class="tabs-holder horizontal">
-                    <ul class="stickynav-tabs nav nav-tabs">
-                        <li class="active"><a data-toggle="tab" href="#home"><i class="icon- icon-room_service"></i>Your Order</a></li>
-                        
-                    </ul>
-                    <div class="tab-content">
-                        <div id="home" class="tab-pane in active">
-                            <div class="menu-itam-holder">
-                                <div>
-                                    <ul>
-                                        {% cart_total user as my_dict %}
-                                        {% for key, value in my_dict.items %}
-                                        <li class="list-unstyled">
-                                            {{key}}
-                                            <span class="price float-right fw-bolder" id="{{key}}">
-                                                ${{value|floatformat:2}}
-                                            </span>
-                                        </li>
-                                        {% endfor %}
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        
-                    </div>
-                </div>
-            </div>
+          </div>
         </div>
+      </div>
+
+      {% comment %} ORDER SUMMARY {% endcomment %}
+      <div class="col-lg-5 col-md-5 col-sm-5 col-xs-12">
+        <div class="tabs-holder horizontal">
+          <ul class="stickynav-tabs nav nav-tabs">
+            <li class="active">
+              <a data-toggle="tab" href="#home"
+                ><i class="icon- icon-room_service"></i>Your Order</a
+              >
+            </li>
+          </ul>
+          <div class="tab-content">
+            <div id="home" class="tab-pane in active">
+              <div class="menu-itam-holder">
+                <div>
+                  <ul>
+                    {% cart_total user as my_dict %} {% for key, value in
+                    my_dict.items %}
+                    <li class="list-unstyled">
+                      {{key}}
+                      <span class="price float-right fw-bolder" id="{{key}}">
+                        ${{value|floatformat:2}}
+                      </span>
+                    </li>
+                    {% endfor %}
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
 </div>
-{% endblock %}
+{% endblock content %}
