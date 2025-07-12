@@ -62,6 +62,7 @@ def send_custom_email(request, user, email_type):
     message = render_to_string(template_name, context)
     to_email = user.email
     mail = EmailMessage(subject, message, from_email=from_email, to=[to_email])
+    mail.content_subtype = 'html'  # Set content type to HTML
     mail.send()
 
 # SEND VENDOR APPROVAL EMAIL
