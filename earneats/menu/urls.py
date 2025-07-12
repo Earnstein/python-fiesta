@@ -4,7 +4,7 @@ from menu import views
 urlpatterns = [
         # CATEGORIES URLS
     path("", views.menuView, name="menu"),
-    path("category/<int:pk>/", views.getCategory, name="getCategory"),
+    path("category/<slug:slug>/", views.getCategory, name="getCategory"),
     path("category/create/", views.createCategory, name="createCategory"),
     path("category/update/<int:pk>/", views.updateCategory, name="updateCategory"),
     path("category/delete/<int:pk>/", views.deleteCategory, name="deleteCategory"),
