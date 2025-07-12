@@ -63,8 +63,8 @@ function onPlaceChanged() {
   }
 }
 
-$(document).ready(function () {
-  $(".add_to_cart").click(function (event) {
+$(document).on("ready", function () {
+  $(".add_to_cart").on("click", function (event) {
     event.preventDefault();
     food_id = $(this).data("id");
     data = { food_id: food_id };
@@ -116,7 +116,7 @@ $(document).ready(function () {
 });
 
 $(document).ready(function () {
-  $(".remove_from_cart").click(function (event) {
+  $(".remove_from_cart").on("click", function (event) {
     event.preventDefault();
     food_id = $(this).data("id");
     data = { food_id: food_id };
@@ -168,7 +168,7 @@ $(document).ready(function () {
 });
 
 $(document).ready(function () {
-  $(".delete_cart").click(function (event) {
+  $(".delete_cart").on("click", function (event) {
     event.preventDefault();
     cart_id = $(this).data("id");
     data = { cart_id: cart_id };
