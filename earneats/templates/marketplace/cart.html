@@ -23,7 +23,7 @@
                     <li id="qty-{{item.id}}">
                       <div class="image-holder">
                         <a href="{{item.fooditem.image.url}}"
-                          ><img src="{{item.fooditem.image.url}}" alt=""
+                          ><img src="{{item.fooditem.image.url}}" alt="{{item.fooditem.name}}"
                         /></a>
                       </div>
                       <div class="text-holder">
@@ -93,8 +93,8 @@
               <div class="menu-itam-holder">
                 <div>
                   <ul>
-                    {% cart_total user as my_dict %} {% for key, value in
-                    my_dict.items %}
+                    {% cart_total user as my_dict %} 
+                    {% for key, value in my_dict.items %}
                     <li class="list-unstyled">
                       {{key}}
                       <span class="price float-right fw-bolder" id="{{key}}">
