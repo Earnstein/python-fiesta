@@ -21,9 +21,9 @@ def menuView(request):
 
 @login_required(login_url="login")
 @user_passes_test(check_role_vendor)
-def getCategory(request, pk=None):
+def getCategory(request, slug=None):
     vendor = get_vendor(request)
-    category = get_object_or_404(Category, pk=pk)
+    category = get_object_or_404(Category, vendor=vendor, slug=slug)
     food_items = FoodItem.objects.filter(vendor=vendor, category=category)
     context = {"food_items": food_items, "category": category}
     return render(request, "vendor/category/getCategory.html", context)
@@ -40,7 +40,7 @@ def createCategory(request):
             category_name = form.cleaned_data["category_name"]
             category = form.save(commit=False)
             category.vendor = vendor
-            category.slug = slugify(f'{vendor.vendor_name} {category.id}')
+            category.slug = slugify(f'{vendor.vendor_name} {category_name}')
             try:
                 category.save()
                 messages.success(request, "Category created successfully")
@@ -91,7 +91,7 @@ def createFood(request):
             food_form.slug = slugify(food_title)
             food_form.save()
             messages.success(request, "Food was added successfully")
-            return redirect("getCategory", food_form.category.id)
+            return redirect("getCategory", food_form.category.slug)
     context = {"form": form}
     return render(request, "vendor/food/createFood.html", context)
 
@@ -106,7 +106,7 @@ def updateFood(request, pk=None):
         if form.is_valid():
             form.save()
             messages.success(request, "Item was updated successfully")
-            return redirect("getCategory", food_item.category.id)
+            return redirect("getCategory", food_item.category.slug)
     context = { "form": form,"food_item": food_item }
     return render(request, "vendor/food/updateFood.html", context)
 
