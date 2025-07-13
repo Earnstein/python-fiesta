@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import get_object_or_404
-from django.db.models import Prefetch
+from django.db.models import Prefetch, Q
 from django.http import JsonResponse, HttpResponse
 from django.contrib.auth.decorators import login_required
 from vendor.models import Vendor
@@ -122,8 +122,8 @@ def search(request):
     longitude = request.GET.get("lng")
     radius = request.GET.get("radius")
     search_title = request.GET.get("search_title")
-
-    vendors = Vendor.approved.filter(vendor_name__icontains=search_title, user__is_active=True)
+    fetch_vendors_by_food_items = FoodItem.objects.filter(food_title__icontains=search_title,is_available=True).values_list("vendor", flat=True)
+    vendors = Vendor.approved.filter(Q(id__in=fetch_vendors_by_food_items) | Q(vendor_name__icontains=search_title,is_approved=True, user__is_active=True))
     count = vendors.count()
     context = {"vendors": vendors, "count":count}
     return render(request, "marketplace/listings.html", context)
