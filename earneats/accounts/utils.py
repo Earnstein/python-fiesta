@@ -6,7 +6,6 @@ from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import EmailMessage
 from django.core.exceptions import PermissionDenied
 from django.conf import settings
-from decouple import config
 
 # RESTRICT THE VENDOR FROM ACCESSING CUSTOMER PAGE AND VICE VERSA.
 def check_role_vendor(user):
@@ -28,7 +27,7 @@ def get_user_role(user):
         redirectUrl = "vendorDashboard"
     elif user.role == 2:
         redirectUrl = "customerDashboard"
-    elif user.role == None and user.is_superadmin:
+    elif user.role is None and user.is_superadmin:
         redirectUrl = "/admin"
     return redirectUrl
 
