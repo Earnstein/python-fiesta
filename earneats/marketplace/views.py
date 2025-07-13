@@ -1,11 +1,11 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import get_object_or_404
 from django.db.models import Prefetch, Q
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from vendor.models import Vendor
-from menu.models import FoodItem, Category
+from menu.models import FoodItem
 from .models import Cart
 from .utils import is_ajax, get_total_cart_quantity, get_total_cart_price
 from django.contrib.gis.geos import GEOSGeometry
@@ -169,7 +169,12 @@ def delete_cart(request, cart_id):
 def search(request):
     """View to search for vendors and food items."""
 
+  
+    if "address" not in request.GET:
+        return redirect("marketplace")
+    
     # Get the latitude, longitude, and radius from the request
+    source_location = request.GET.get("address")
     latitude = request.GET.get("lat")
     longitude = request.GET.get("lng")
     radius = request.GET.get("radius")
@@ -196,6 +201,12 @@ def search(request):
             .annotate(distance=Distance("user_profile__location", pnt))
             .order_by("distance")
         )
+        for vendor in vendors:
+            vendor.km = round(vendor.distance.km, 1)
 
-    context = {"vendors": vendors, "count": vendors.count()}
+    context = {
+        "vendors": vendors,
+        "count": vendors.count(),
+        "source_location": source_location,
+    }
     return render(request, "marketplace/listings.html", context)
