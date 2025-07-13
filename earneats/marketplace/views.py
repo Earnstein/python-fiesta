@@ -121,9 +121,11 @@ def search(request):
     latitude = request.GET.get("lat")
     longitude = request.GET.get("lng")
     radius = request.GET.get("radius")
+    
     search_title = request.GET.get("search_title")
-    fetch_vendors_by_food_items = FoodItem.objects.filter(food_title__icontains=search_title,is_available=True).values_list("vendor", flat=True)
-    vendors = Vendor.approved.filter(Q(id__in=fetch_vendors_by_food_items) | Q(vendor_name__icontains=search_title,is_approved=True, user__is_active=True))
+    vendors = Vendor.approved.filter(
+        Q(id__in=FoodItem.objects.filter(food_title__icontains=search_title,is_available=True).values_list("vendor", flat=True))  | 
+        Q(vendor_name__icontains=search_title,is_approved=True, user__is_active=True))
     count = vendors.count()
     context = {"vendors": vendors, "count":count}
     return render(request, "marketplace/listings.html", context)
