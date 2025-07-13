@@ -2,16 +2,11 @@ from django.shortcuts import render, get_object_or_404
 from django.contrib import messages
 from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required, user_passes_test
-from django.utils.text import slugify
 from accounts.utils import check_role_vendor
 from accounts.forms import UserProfileForm
 from accounts.models import UserProfile
-from menu.models import Category, FoodItem
-from menu.forms import CategoryForm
 from .forms import VendorForm
 from .models import Vendor
-from .utils import get_vendor
-
 
 
 @login_required(login_url="login")
