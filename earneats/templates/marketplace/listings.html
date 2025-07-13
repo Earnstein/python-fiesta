@@ -3,12 +3,12 @@
 {% load static %}
 {% block content %}
 <div class="main-section">
-    <div class="page-section nopadding cs-nomargin" style="margin-top: 0px;padding-top: 80px;padding-bottom: 60px;margin-bottom: 0px;background: url({% static 'images/default-cover.PNG' %}) no-repeat center top / cover;">
+    <div class="page-section nopadding cs-nomargin" style="margin-top: 0px;padding-top: 80px;padding-bottom: 10rem;margin-bottom: 0px;background: url({% static 'images/default-cover.PNG' %}) no-repeat center top / cover;">
         <!-- Container Start -->
         <div class="container ">
             <div class="row">
                 <div class="section-fullwidth col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                    <div class="row">
+                    {% comment %} <div class="row">
                         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
                             <!--Element Section Start-->
                             <!--Foodbakery Element Start-->
@@ -85,7 +85,7 @@
                             </div>
                             <!--Foodbakery Element End-->
                         </div>
-                    </div><!-- end section row -->
+                    </div> {% endcomment %}
                 </div>
             </div>
         </div> <!-- End Container Start -->
@@ -132,6 +132,10 @@
                                             {% if vendor.user_profile.pin_code and vendor.user_profile.city and vendor.user_profile.state and vendor.user_profile.country  %}
                                             <i class="icon-location"></i>
                                             <span>{{ vendor.user_profile.pin_code }} {{ vendor.user_profile.city }} {{ vendor.user_profile.state }}, {{ vendor.user_profile.country }}.</span>
+                                            <br>
+                                            {% if source_location %}
+                                            <b>{{ vendor.km }} km away from {{source_location}}</b>
+                                            {% endif %}
                                             {% endif %}
                                         </div>
                                     </div>
