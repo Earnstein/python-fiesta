@@ -1,15 +1,16 @@
+import os
+import platform
 from pathlib import Path
 from decouple import config
-from django.contrib.messages import constants as messages
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-# SECURITY WARNING: keep the secret key used in production secret!
+# Todo: Change secret key in production
 SECRET_KEY = config("SECRET_KEY")
 
-# SECURITY WARNING: don't run with debug turned on in production!
+# Todo: Change to False in production
 DEBUG = config("DEBUG", cast=bool)
 
 ALLOWED_HOSTS = []
@@ -24,6 +25,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django.contrib.gis", 
     "accounts.apps.AccountsConfig",
     "vendor.apps.VendorConfig",
     "menu.apps.MenuConfig",
@@ -64,11 +66,11 @@ WSGI_APPLICATION = "earneats.wsgi.application"
 
 
 # Database
-# https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.postgresql",
+        # "ENGINE": "django.db.backends.postgresql",  
+        "ENGINE": "django.contrib.gis.db.backends.postgis",  # Use PostGIS engine for GeoDjango
         "NAME": config("DB_NAME"),
         "USER": config("DB_USER"),
         "PASSWORD": config("DB_PASSWORD"),
@@ -79,7 +81,6 @@ DATABASES = {
 AUTH_USER_MODEL = "accounts.User"
 
 # Password validation
-# https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -98,7 +99,6 @@ AUTH_PASSWORD_VALIDATORS = [
 
 
 # Internationalization
-# https://docs.djangoproject.com/en/4.2/topics/i18n/
 
 LANGUAGE_CODE = "en-us"
 
@@ -110,7 +110,6 @@ USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR /"static"
@@ -124,7 +123,6 @@ MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR /"media"
 
 # Default primary key field type
-# https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
@@ -140,3 +138,20 @@ DEFAULT_FROM_EMAIL = config("DEFAULT_FROM_EMAIL")
 
 # GOOGLE API CONFIGURATION
 GOOGLE_API_KEY = config("GOOGLE_API_KEY")
+
+# GEODJANGO CONFIGURATION
+
+# Dynamic library path detection
+if platform.system() == 'Darwin':  # macOS
+    # Check for Homebrew installation (Apple Silicon)
+    if os.path.exists('/opt/homebrew/lib'):
+        GDAL_LIBRARY_PATH = '/opt/homebrew/lib/libgdal.dylib'
+        GEOS_LIBRARY_PATH = '/opt/homebrew/lib/libgeos_c.dylib'
+    # Check for Homebrew installation (Intel)
+    elif os.path.exists('/usr/local/lib'):
+        GDAL_LIBRARY_PATH = '/usr/local/lib/libgdal.dylib'
+        GEOS_LIBRARY_PATH = '/usr/local/lib/libgeos_c.dylib'
+elif platform.system() == 'Linux':
+    # Common Linux paths
+    GDAL_LIBRARY_PATH = '/usr/lib/libgdal.so'
+    GEOS_LIBRARY_PATH = '/usr/lib/libgeos_c.so'

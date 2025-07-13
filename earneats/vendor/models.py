@@ -32,7 +32,7 @@ class Vendor(models.Model):
                         "user": self.user,
                         "is_approved": self.is_approved
                     }
-                if self.is_approved == True:
+                if self.is_approved:
                     # SEND APPROVAL EMAIL
                     mail_subject = "Congratulations! Your resturant has been approved"
                 else:
