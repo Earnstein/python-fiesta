@@ -67,7 +67,7 @@ class NotebookGenerator:
                 self.note_lines(y_cor=30)
                 self.footer(text, 275)
 
-        self.pdf.output(f"{name}.pdf")
+        self.pdf.output(f"books/{name}.pdf")
         print(f"Notebook generated: {name}.pdf")
 
 
