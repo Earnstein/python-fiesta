@@ -165,6 +165,30 @@ def delete_cart(request, cart_id):
         }
     )
 
+def _extract_search_parameters(request):
+    """Extract the search parameters from the request."""
+    source_location = request.GET.get("address")
+    latitude = request.GET.get("lat")
+    longitude = request.GET.get("lng")
+    radius = request.GET.get("radius")
+    search_title = request.GET.get("search_title")
+    return {
+        "source_location": source_location,
+        "latitude": latitude,
+        "longitude": longitude,
+        "radius": radius,
+        "search_title": search_title,
+    }
+
+
+def _has_location_data(search_params):
+    """Check if all required location parameters are present."""
+    return all([
+        search_params['latitude'],
+        search_params['longitude'], 
+        search_params['radius']
+    ])
+
 
 def search(request):
     """View to search for vendors and food items."""
@@ -173,31 +197,25 @@ def search(request):
     if "address" not in request.GET:
         return redirect("marketplace")
     
-    # Get the latitude, longitude, and radius from the request
-    source_location = request.GET.get("address")
-    latitude = request.GET.get("lat")
-    longitude = request.GET.get("lng")
-    radius = request.GET.get("radius")
-
-    # Get the search title from the request
-    search_title = request.GET.get("search_title")
+    search_params = _extract_search_parameters(request)
+    search_title = search_params["search_title"]
 
     # Get the food items that match the search title and are available
-    food_items = FoodItem.objects.filter(
+    matching_food_items = FoodItem.objects.filter(
         food_title__icontains=search_title, is_available=True
     )
 
     # Get the vendors that match the search title and are approved and active
     vendors = Vendor.approved.filter(
-        Q(id__in=food_items.values_list("vendor", flat=True))
+        Q(id__in=matching_food_items.values_list("vendor", flat=True))
         | Q(vendor_name__icontains=search_title, is_approved=True, user__is_active=True)
     )
 
     # filter the vendors by distance
-    if latitude and longitude and radius:
-        pnt = GEOSGeometry(f"POINT({longitude} {latitude})", srid=4326)
+    if _has_location_data(search_params):
+        pnt = GEOSGeometry(f"POINT({search_params['longitude']} {search_params['latitude']})", srid=4326)
         vendors = (
-            vendors.filter(user_profile__location__distance_lte=(pnt, D(km=radius)))
+            vendors.filter(user_profile__location__distance_lte=(pnt, D(km=search_params['radius'])))
             .annotate(distance=Distance("user_profile__location", pnt))
             .order_by("distance")
         )
@@ -207,6 +225,6 @@ def search(request):
     context = {
         "vendors": vendors,
         "count": vendors.count(),
-        "source_location": source_location,
+        "source_location": search_params["source_location"],
     }
     return render(request, "marketplace/listings.html", context)
