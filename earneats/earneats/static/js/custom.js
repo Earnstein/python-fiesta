@@ -63,7 +63,7 @@ function onPlaceChanged() {
   }
 }
 
-$(document).on("ready", function () {
+$(document).ready(function () {
   $(".add_to_cart").on("click", function (event) {
     event.preventDefault();
     food_id = $(this).data("id");
@@ -83,15 +83,7 @@ $(document).on("ready", function () {
           tax,
           total,
         } = response;
-        if (status === "failed") {
-          swal({
-            text: message,
-            icon: "info",
-            timer: 2000,
-          }).then(() => {
-            window.location = "/login";
-          });
-        } else {
+        if (status === "success") {
           $("#cart_counter").text(totalQuantity);
           $(`#qty-${food_id}`).text(foodQuantity);
           $("#subtotal").text(`$ ${subtotal}`);
@@ -101,6 +93,14 @@ $(document).on("ready", function () {
             text: message,
             icon: "success",
             timer: 1000,
+          });
+        } else {
+          swal({
+            text: message,
+            icon: "info",
+            timer: 2000,
+          }).then(() => {
+            window.location = "/login";
           });
         }
       },
