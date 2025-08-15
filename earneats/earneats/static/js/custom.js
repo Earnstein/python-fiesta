@@ -63,7 +63,7 @@ function onPlaceChanged() {
   }
 }
 
-$(document).ready(function () {
+$(function () {
   $(".add_to_cart").on("click", function (event) {
     event.preventDefault();
     food_id = $(this).data("id");
@@ -115,7 +115,7 @@ $(document).ready(function () {
   });
 });
 
-$(document).ready(function () {
+$(function () {
   $(".remove_from_cart").on("click", function (event) {
     event.preventDefault();
     food_id = $(this).data("id");
@@ -167,7 +167,7 @@ $(document).ready(function () {
   });
 });
 
-$(document).ready(function () {
+$(function () {
   $(".delete_cart").on("click", function (event) {
     event.preventDefault();
     cart_id = $(this).data("id");
