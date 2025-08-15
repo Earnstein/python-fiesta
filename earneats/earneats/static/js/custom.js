@@ -216,3 +216,81 @@ $(function () {
     });
   });
 });
+
+function updateUrlWithCoordinates(latitude, longitude) {
+  const url = new URL(window.location);
+  url.searchParams.set("lat", latitude);
+  url.searchParams.set("lng", longitude);
+  history.pushState({}, "", url);
+}
+
+function getLocation() {
+  const x = document.getElementById("id_location");
+
+  // Check if URL already has lat/lng params
+  const urlParams = new URLSearchParams(window.location.search);
+  const lat = urlParams.get("lat");
+  const lng = urlParams.get("lng");
+
+  if (lat && lng) {
+    // URL already has coordinates, use them
+    const location = sessionStorage.getItem("location");
+    if (location) {
+      x.value = location;
+    } else {
+      x.value = `${lat}, ${lng}`;
+    }
+    return;
+  }
+
+  // Check sessionStorage only if URL doesn't have params
+  const location = sessionStorage.getItem("location");
+  if (location) {
+    x.value = location;
+    return;
+  }
+
+  if (!x) {
+    console.error("Location input element not found");
+    return;
+  }
+
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      (position) => success(position, x),
+      (error) => handleError(error, x)
+    );
+  } else {
+    x.value = "Geolocation is not supported by this browser.";
+  }
+}
+
+function success(position, element) {
+  const { latitude, longitude } = position.coords;
+  element.value = `${latitude}, ${longitude}`;
+
+  // Get the address from the latitude and longitude
+  if (typeof google !== "undefined" && google.maps) {
+    const geocoder = new google.maps.Geocoder();
+    const latlng = { lat: parseFloat(latitude), lng: parseFloat(longitude) };
+
+    geocoder.geocode({ location: latlng }, (results, status) => {
+      if (status === "OK" && results[0]) {
+        element.value = results[0].formatted_address;
+        sessionStorage.setItem("location", results[0].formatted_address);
+        updateUrlWithCoordinates(latitude, longitude);
+      } else {
+        element.value = `${latitude}, ${longitude}`;
+        updateUrlWithCoordinates(latitude, longitude);
+      }
+    });
+  } else {
+    // Fallback if Google Maps is not available
+    element.value = `${latitude}, ${longitude}`;
+    updateUrlWithCoordinates(latitude, longitude);
+  }
+}
+
+function handleError(error, element) {
+  element.value = "Location unavailable";
+}
