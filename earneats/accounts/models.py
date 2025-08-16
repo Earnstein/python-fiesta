@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.contrib.gis.db import models as gis_models
 from django.contrib.gis.geos import Point
+from django_countries.fields import CountryField
 
 # Create your models here.
 
@@ -89,7 +90,7 @@ class UserProfile(models.Model):
     profile_picture = models.ImageField(upload_to='users/profile_picture',blank=True, null=True)
     cover_picture = models.ImageField(upload_to='users/cover_picture',blank=True, null=True)
     address = models.CharField(max_length=250,blank=True, null=True)
-    country = models.CharField(max_length=15,blank=True, null=True)
+    country = CountryField(max_length=15,blank_label='Select Country',null=True, blank=True)
     state = models.CharField(max_length=15, blank=True, null=True)
     city = models.CharField(max_length=15, blank=True, null=True)
     pin_code = models.CharField(max_length=6, blank=True, null=True)
