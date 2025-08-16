@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="main-section">
+    <div class="page-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="user-dashboard loader-holder">
+                        <div class="user-holder">
+                            <h4 class="text-uppercase">{{ action }} Opening Hours</h4>
+                            
+                            {% if messages %}
+                                {% for message in messages %}
+                                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                        {{ message }}
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
+                            
+                            <div class="row">
+                                <div class="col-lg-8 col-md-8 col-sm-8 col-xs-12">
+                                    <div class="user-orders">
+                                        <div class="widget-header">
+                                            <h4 class="widget-title">Opening Hours Details</h4>
+                                        </div>
+                                        
+                                        {% if form.fields.day_of_week.choices|length == 1 and form.fields.day_of_week.choices.0.0 == '' %}
+                                            <div class="alert alert-warning">
+                                                <i class="icon-warning"></i> All days of the week are already configured. 
+                                                <a href="{% url 'opening_hours_list' %}" class="alert-link">Go back to list</a> to edit existing hours.
+                                            </div>
+                                        {% else %}
+                                            <form method="POST" class="form-horizontal">
+                                                {% csrf_token %}
+                                                
+                                                <div class="form-group">
+                                                    <label for="{{ form.day_of_week.id_for_label }}" class="control-label">Day of Week</label>
+                                                    {{ form.day_of_week }}
+                                                    {% if form.day_of_week.errors %}
+                                                        <div class="text-danger">
+                                                            {% for error in form.day_of_week.errors %}
+                                                                <small>{{ error }}</small>
+                                                            {% endfor %}
+                                                        </div>
+                                                    {% endif %}
+                                                </div>
+                                                
+                                                <div class="form-group">
+                                                    <div class="form-check">
+                                                        {{ form.is_open }}
+                                                        <label class="form-check-label" for="{{ form.is_open.id_for_label }}">
+                                                            This day is open for business
+                                                        </label>
+                                                    </div>
+                                                    {% if form.is_open.errors %}
+                                                        <div class="text-danger">
+                                                            {% for error in form.is_open.errors %}
+                                                                <small>{{ error }}</small>
+                                                            {% endfor %}
+                                                        </div>
+                                                    {% endif %}
+                                                </div>
+                                                
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label for="{{ form.from_hour.id_for_label }}" class="control-label">Opening Time</label>
+                                                            {{ form.from_hour }}
+                                                            {% if form.from_hour.errors %}
+                                                                <div class="text-danger">
+                                                                    {% for error in form.from_hour.errors %}
+                                                                        <small>{{ error }}</small>
+                                                                    {% endfor %}
+                                                                </div>
+                                                            {% endif %}
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label for="{{ form.to_hour.id_for_label }}" class="control-label">Closing Time</label>
+                                                            {{ form.to_hour }}
+                                                            {% if form.to_hour.errors %}
+                                                                <div class="text-danger">
+                                                                    {% for error in form.to_hour.errors %}
+                                                                        <small>{{ error }}</small>
+                                                                    {% endfor %}
+                                                                </div>
+                                                            {% endif %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="form-group">
+                                                    <button type="submit" class="btn btn-primary">
+                                                        <i class="icon-save"></i> <span class="d-none d-md-inline">{{ action }} Opening Hours</span>
+                                                    </button>
+                                                    <a href="{% url 'opening_hours_list' %}" class="btn btn-secondary">
+                                                        <i class="icon-arrow-left"></i> <span class="d-none d-md-inline">Back to List</span>
+                                                    </a>
+                                                </div>
+                                            </form>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                
+                                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                    <div class="widget">
+                                        <div class="widget-header">
+                                            <h4 class="widget-title">Help</h4>
+                                        </div>
+                                        <div class="widget-body">
+                                            <ul class="list-unstyled">
+                                                <li><i class="icon-info"></i> Select the day of the week</li>
+                                                <li><i class="icon-info"></i> Check if the day is open</li>
+                                                <li><i class="icon-info"></i> Set opening and closing times</li>
+                                                <li><i class="icon-info"></i> Times should be in 24-hour format</li>
+                                                <li><i class="icon-info"></i> Closing time must be after opening time</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const isOpenCheckbox = document.getElementById('{{ form.is_open.id_for_label }}');
+    const fromHourInput = document.getElementById('{{ form.from_hour.id_for_label }}');
+    const toHourInput = document.getElementById('{{ form.to_hour.id_for_label }}');
+    
+    function toggleTimeInputs() {
+        const isOpen = isOpenCheckbox.checked;
+        fromHourInput.disabled = !isOpen;
+        toHourInput.disabled = !isOpen;
+        
+        if (!isOpen) {
+            fromHourInput.value = '';
+            toHourInput.value = '';
+        }
+    }
+    
+    isOpenCheckbox.addEventListener('change', toggleTimeInputs);
+    toggleTimeInputs(); // Initial state
+});
+</script>
+{% endblock %}

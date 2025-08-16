@@ -31,39 +31,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="delivery-timing reviews-sortby">
-                            <div class="text">
-                                <i class="icon-motorcycle"></i>
-                                <p>
-                                    Delivery fee: £10.00<span>
-                                        Min Order : £10.00 Max Order : £50.00</span>
-                                </p>
-                            </div>
-                            <ul>
-                                <li>
-                                    <a href="#" class="reviews-sortby-active">
-                                        <span>Today :</span>
-                                        11:00 am - 11:00 pm <i class="icon-chevron-small-down"></i>
-                                    </a>
-                                    <ul class="delivery-dropdown">
-                                        <li><a href="#"><span class="opend-day">Monday</span> <span class="opend-time"><small>:</small> 11:00 am - 11:00
-                                                    pm</span></a></li>
-                                        <li><a href="#"><span class="opend-day">Tuesday</span> <span class="opend-time"><small>:</small> 11:00 am - 11:00
-                                                    pm</span></a></li>
-                                        <li><a href="#"><span class="opend-day">Wednesday</span> <span class="opend-time"><small>:</small> 11:00 am - 11:00
-                                                    pm</span></a></li>
-                                        <li><a href="#"><span class="opend-day">Thursday</span> <span class="opend-time"><small>:</small> 11:00 am - 11:00
-                                                    pm</span></a></li>
-                                        <li><a href="#"><span class="opend-day">Friday</span> <span class="opend-time"><small>:</small> 11:00 am - 11:00
-                                                    pm</span></a></li>
-                                        <li><a href="#"><span class="opend-day">Saturday</span> <span class="opend-time"><small>:</small> 11:00 am - 11:00
-                                                    pm</span></a></li>
-                                        <li><a href="#"><span class="opend-day">Sunday</span> <span class="opend-time close-day"><small>:</small>Closed</span></a>
-                                        </li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </div>
+                        {% include 'includes/opening_hours.html' with opening_hours=opening_hours current_day=current_day %}
                     </div>
                 </div>
                 <!-- Column End -->
