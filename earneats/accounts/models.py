@@ -99,6 +99,13 @@ class UserProfile(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
 
+    class Meta:
+        verbose_name = 'user profile'
+        verbose_name_plural = 'user profiles'
+        indexes = [
+            models.Index(fields=['location'], name='location_idx'),
+        ]
+
     def __str__(self):
         return self.user.email
 
