@@ -119,7 +119,7 @@
                                         <a href="{% url 'vendor_detail' vendor.vendor_slug %}" ><img src="{% static 'images/default-profile.PNG' %}" class="attachment-full size-full wp-post-image" alt="{{vendor.vendor_name}}"></a>
                                         {% endif %}
                                     </figure>
-                                    <span class="restaurant-status close"><em class="bookmarkRibbon"></em>Close</span>
+                                    <span class="restaurant-status {% if vendor.is_currently_open %}open{% else %}close{% endif %}"><em class="bookmarkRibbon"></em>{% if vendor.is_currently_open %}open{% else %}closed{% endif %}</span>
                                 </div>
                                 <div class="text-holder">
                                     <div class="post-title">
