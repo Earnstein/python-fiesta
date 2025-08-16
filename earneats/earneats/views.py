@@ -52,15 +52,33 @@ def _get_nearby_vendors(lat: float, lng: float, radius_km: int = 10) -> list:
     return list(vendors)
 
 def home(request):
-    """Home page view showing nearby vendors or featured vendors."""
+    """Home page view showing nearby vendors first, then other vendors to fill remaining slots."""
+    MAX_VENDORS = 8
     location = _get_location_from_request(request)
+    
     if location:
         lat, lng = location
-        # Get nearby vendors or fallback to featured vendors
-        vendors = _get_nearby_vendors(lat, lng) or Vendor.approved.all()[:8]
+        # Get nearby vendors
+        nearby_vendors = _get_nearby_vendors(lat, lng)
+        
+        # If we have enough nearby vendors, use them
+        if len(nearby_vendors) >= MAX_VENDORS:
+            vendors = nearby_vendors[:MAX_VENDORS]
+        else:
+            # Get other vendors to fill remaining slots
+            nearby_vendor_ids = [vendor.id for vendor in nearby_vendors]
+            other_vendors = (
+                Vendor.approved
+                .exclude(id__in=nearby_vendor_ids)
+                .order_by('?')  # Random order for variety
+                [:MAX_VENDORS - len(nearby_vendors)]
+            )
+            
+            # Combine nearby first, then others
+            vendors = list(nearby_vendors) + list(other_vendors)
     else:
         # Fallback to featured vendors if no location data is available
-        vendors = Vendor.approved.all()[:8]
+        vendors = Vendor.approved.all()[:MAX_VENDORS]
 
     context = {"vendors": vendors}
     return render(request, 'home.html', context)
