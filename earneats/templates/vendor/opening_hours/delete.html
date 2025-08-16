@@ -28,8 +28,10 @@
                                                 <h5 class="card-title">{{ opening_hours.get_day_name }}</h5>
                                                 <p class="card-text">
                                                     <strong>Status:</strong> 
-                                                    {% if opening_hours.is_open %}
-                                                        <span class="badge bg-success">Open</span>
+                                                    {% if opening_hours.is_currently_open %}
+                                                        <span class="badge bg-success">Open Now</span>
+                                                    {% elif opening_hours.is_open %}
+                                                        <span class="badge bg-warning">Scheduled</span>
                                                     {% else %}
                                                         <span class="badge bg-danger">Closed</span>
                                                     {% endif %}
