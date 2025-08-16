@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.contrib.gis.db import models as gis_models
 from django.contrib.gis.geos import Point
+from django_countries.fields import CountryField
 
 # Create your models here.
 
@@ -89,7 +90,7 @@ class UserProfile(models.Model):
     profile_picture = models.ImageField(upload_to='users/profile_picture',blank=True, null=True)
     cover_picture = models.ImageField(upload_to='users/cover_picture',blank=True, null=True)
     address = models.CharField(max_length=250,blank=True, null=True)
-    country = models.CharField(max_length=15,blank=True, null=True)
+    country = CountryField(max_length=15,blank_label='Select Country',null=True, blank=True)
     state = models.CharField(max_length=15, blank=True, null=True)
     city = models.CharField(max_length=15, blank=True, null=True)
     pin_code = models.CharField(max_length=6, blank=True, null=True)
@@ -98,6 +99,13 @@ class UserProfile(models.Model):
     location = gis_models.PointField(null=True, blank=True, help_text="User location coordinates", srid=4326)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = 'user profile'
+        verbose_name_plural = 'user profiles'
+        indexes = [
+            models.Index(fields=['location'], name='location_idx'),
+        ]
 
     def __str__(self):
         return self.user.email

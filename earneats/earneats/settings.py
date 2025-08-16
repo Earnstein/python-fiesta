@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     "menu.apps.MenuConfig",
     "marketplace.apps.MarketplaceConfig",
     "django.contrib.postgres",
+    "django_countries",
 ]
 
 MIDDLEWARE = [

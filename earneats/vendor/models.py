@@ -194,6 +194,13 @@ class Vendor(models.Model):
     objects = models.Manager()
     approved = ApprovedManager()
 
+    class Meta:
+        verbose_name = 'vendor'
+        verbose_name_plural = 'vendors'
+        indexes = [
+            models.Index(fields=['vendor_name'], name='vendor_name_idx'),
+        ]
+
     def save(self, *args, **kwargs):
         # UPDATE
         if self.pk is not None:

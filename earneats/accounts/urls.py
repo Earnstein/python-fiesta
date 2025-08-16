@@ -13,6 +13,7 @@ urlpatterns = [
     path("", views.httpGetUserAccount),
     path("myAccount/", views.httpGetUserAccount, name="userAccount"),
     path("customerDashboard/", views.httpCustomerDashboard, name="customerDashboard"),
+    path("customerProfile/", views.httpCustomerProfile, name="customerProfile"),
     path("vendorDashboard/", views.httpVendorDashboard, name="vendorDashboard"),
     path("activate/<uidb64>/<token>/", views.activate, name="activate"),
 

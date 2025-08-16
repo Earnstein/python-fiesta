@@ -1,5 +1,4 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -8,7 +7,7 @@ from django.utils import timezone
 from django.contrib.gis.geos import GEOSGeometry
 from django.contrib.gis.measure import D
 from vendor.models import Vendor
-from menu.models import Category, FoodItem
+from menu.models import FoodItem
 from marketplace.models import Cart
 from marketplace.utils import is_ajax, get_total_cart_quantity, get_total_cart_price
 

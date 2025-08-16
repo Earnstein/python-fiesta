@@ -137,3 +137,37 @@
 .opend-time .text-danger {
   font-weight: 500;
 }
+
+/* Customer Dashboard Status Styles */
+.user-suggest-list .text-success {
+  color: #28a745 !important;
+  font-weight: 500;
+}
+
+.user-suggest-list .text-muted {
+  color: #6c757d !important;
+  font-weight: 500;
+}
+
+.user-suggest-list .text-danger {
+  color: #dc3545 !important;
+  font-weight: 500;
+}
+
+/* Customer Dashboard Inline Status in Title */
+.user-suggest-list .post-title .status-inline {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 500;
+  padding: 2px 6px;
+  border-radius: 3px;
+  margin-right: 8px;
+  color: white;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  vertical-align: middle;
+}
+
+.user-suggest-list .post-title .status-inline i {
+  margin-right: 2px;
+  font-size: 9px;
+}

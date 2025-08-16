@@ -1,6 +1,7 @@
 from django.db import models
 from menu.models import FoodItem
 from accounts.models import User
+from django_countries.fields import CountryField
 
 
 class Cart(models.Model):
@@ -29,3 +30,24 @@ class Cart(models.Model):
         return self.user.email
 
 
+
+
+CATEGORY_CHOICES = [
+    ('food', 'Food'),
+    ('service', 'Service'),
+    ('luxury', 'Luxury'),
+]
+
+class Tax(models.Model):
+    country = CountryField(max_length=15,blank_label='Select Country',null=True, blank=True)
+    category = models.CharField(max_length=50, blank=True, null=True, choices=CATEGORY_CHOICES)  # food, service, luxury
+    tax_type = models.CharField(max_length=20, unique=True, blank=True, null=True)
+    tax_percentage = models.DecimalField(decimal_places=2, max_digits=10, verbose_name='Tax Percentage (%)')
+    is_active = models.BooleanField(default=True)
+
+    class Meta:
+        verbose_name = 'tax'
+        verbose_name_plural = 'taxes'
+
+    def __str__(self):
+        return self.tax_type

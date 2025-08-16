@@ -1,14 +1,21 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages, auth
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils.http import urlsafe_base64_decode
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.text import slugify
-from .forms import UserForm
+from .forms import UserForm, UserProfileForm
 from .models import User, UserProfile
 from vendor.forms import VendorForm
 from accounts.utils import check_role_customer, check_role_vendor, get_user_role, send_custom_email
 from .context_processors import get_vendor
+from vendor.models import Vendor
+from earneats.utils import get_location_from_request
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.utils import timezone
+from django.contrib.gis.geos import Point
+from django.contrib.gis.db.models.functions import Distance
+
 # USER REGISTRATION VIEW
 def httpRegisterUser(request):
     """
@@ -171,11 +178,70 @@ def httpGetUserAccount(request):
 @login_required(login_url='login')
 @user_passes_test(check_role_customer)
 def httpCustomerDashboard(request):
-    """
-    View for displaying the customer dashboard. Only accessible to customers.
-    """
-    return render(request, "accounts/customerDashboard.html")
+    
+    location = get_location_from_request(request)
+    page_number = request.GET.get("page", 1)
+    vendors_per_page = 5
+    
+    # Get vendors with opening status
+    vendor_queryset = (
+        Vendor.approved
+        .with_opening_status()
+        .select_related('user', 'user_profile')
+        .prefetch_related('opening_hours', 'categories')
+    )
+    
+    if location:
+        lat, lng = location
+        user_location = Point(lng, lat, srid=4326)
+        vendor_queryset = vendor_queryset.annotate(
+            distance=Distance("user_profile__location", user_location)
+        ).order_by('distance', 'vendor_name')
+    else:
+        vendor_queryset = vendor_queryset.order_by('vendor_name')
+    
+    # Paginate the queryset
+    paginator = Paginator(vendor_queryset, vendors_per_page)
+    
+    try:
+        vendors = paginator.page(page_number)
+    except (EmptyPage, PageNotAnInteger):
+        vendors = paginator.page(1)
+    
+    context = {
+        "vendors": vendors,
+        "current_day": timezone.now().isoweekday(),
+        "total_vendors": paginator.count,
+        "has_location": bool(location)
+    }
+    return render(request, "accounts/customerDashboard.html", context)
 
+# CUSTOMER PROFILE VIEW
+@login_required(login_url='login')
+@user_passes_test(check_role_customer)
+def httpCustomerProfile(request):
+    """
+    View for displaying and updating customer profile. Only accessible to customers.
+    """
+    profile = get_object_or_404(UserProfile, user=request.user)
+    
+    if request.method == "POST":
+        profile_form = UserProfileForm(request.POST, request.FILES, instance=profile)
+        if profile_form.is_valid():
+            profile_form.save()
+            messages.success(request, "Profile updated successfully")
+            return redirect("customerProfile")
+        else:
+            messages.error(request, "Error updating profile")
+            print(profile_form.errors)
+    else:
+        profile_form = UserProfileForm(instance=profile)
+    
+    context = {
+        "profile_form": profile_form,
+        "profile": profile,
+    }
+    return render(request, "accounts/customerProfile.html", context)
 
 # VIEW THAT RESTRICT ACCESS TO ONLY VENDOR DASHBOARD
 @login_required(login_url='login')
