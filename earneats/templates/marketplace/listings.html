@@ -138,6 +138,22 @@
                                             {% endif %}
                                             {% endif %}
                                         </div>
+                                        <div class="post-time mt-2">
+                                            <i class="icon-clock"></i>
+                                            {% for hours in vendor.opening_hours.all %}
+                                                {% if hours.day_of_week == current_day %}
+                                                    {% if hours.is_currently_open %}
+                                                        <span class="text-success fw-bold">{{ hours.get_formatted_hours }} (Open Now)</span>
+                                                    {% elif hours.is_open %}
+                                                        <span class="text-muted">{{ hours.get_formatted_hours }} (Closed for today)</span>
+                                                    {% else %}
+                                                        <span class="text-danger">Closed today</span>
+                                                    {% endif %}
+                                                {% endif %}
+                                            {% empty %}
+                                                <span class="text-muted">Hours not set</span>
+                                            {% endfor %}
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="list-option">
