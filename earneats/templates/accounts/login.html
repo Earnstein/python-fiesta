@@ -56,15 +56,21 @@
                             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                               <div class="field-holder">
                                 <label>Password</label>
-                                <input
-                                  type="password"
-                                  name="password"
-                                  placeholder="password"
-                                  aria-required="true"
-                                  aria-label="password"
-                                  autocomplete="current-password"
-                                  required
-                                />
+                                <div class="password-field-wrapper">
+                                  <input
+                                    type="password"
+                                    name="password"
+                                    id="id_password"
+                                    placeholder="password"
+                                    aria-required="true"
+                                    aria-label="password"
+                                    autocomplete="current-password"
+                                    required
+                                  />
+                                  <button type="button" class="password-toggle" data-target="id_password">
+                                    <i class="fa fa-eye"></i>
+                                  </button>
+                                </div>
                               </div>
                             </div>
                           </div>

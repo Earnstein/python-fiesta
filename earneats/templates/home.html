@@ -134,6 +134,12 @@
 										{% if vendor.user_profile.pin_code and vendor.user_profile.city and vendor.user_profile.state and vendor.user_profile.country  %}
 										<address>{{ vendor.user_profile.pin_code }} {{ vendor.user_profile.city }} {{ vendor.user_profile.state }}, {{ vendor.user_profile.country }}.</address>
 										{% endif %}
+
+										
+										{% if vendor.km %}
+											<address>{{ vendor.km }} km away</address>
+										{% endif %}
+											
 									</div>
 									<div class="list-option">
 										<a href="javascript:void(0);" class="shortlist-btn" data-toggle="modal" data-target="#sign-in"><i class="icon-heart-o"></i></a>

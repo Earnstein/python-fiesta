@@ -63,7 +63,7 @@ function onPlaceChanged() {
   }
 }
 
-$(document).on("ready", function () {
+$(function () {
   $(".add_to_cart").on("click", function (event) {
     event.preventDefault();
     food_id = $(this).data("id");
@@ -83,15 +83,7 @@ $(document).on("ready", function () {
           tax,
           total,
         } = response;
-        if (status === "failed") {
-          swal({
-            text: message,
-            icon: "info",
-            timer: 2000,
-          }).then(() => {
-            window.location = "/login";
-          });
-        } else {
+        if (status === "success") {
           $("#cart_counter").text(totalQuantity);
           $(`#qty-${food_id}`).text(foodQuantity);
           $("#subtotal").text(`$ ${subtotal}`);
@@ -101,6 +93,14 @@ $(document).on("ready", function () {
             text: message,
             icon: "success",
             timer: 1000,
+          });
+        } else {
+          swal({
+            text: message,
+            icon: "info",
+            timer: 2000,
+          }).then(() => {
+            window.location = "/login";
           });
         }
       },
@@ -115,7 +115,7 @@ $(document).on("ready", function () {
   });
 });
 
-$(document).ready(function () {
+$(function () {
   $(".remove_from_cart").on("click", function (event) {
     event.preventDefault();
     food_id = $(this).data("id");
@@ -167,7 +167,7 @@ $(document).ready(function () {
   });
 });
 
-$(document).ready(function () {
+$(function () {
   $(".delete_cart").on("click", function (event) {
     event.preventDefault();
     cart_id = $(this).data("id");
@@ -214,5 +214,139 @@ $(document).ready(function () {
         });
       },
     });
+  });
+});
+
+function setLocation(latitude, longitude) {
+  sessionStorage.setItem("lat", latitude);
+  sessionStorage.setItem("lng", longitude);
+}
+
+function updateUrlWithCoordinates(latitude, longitude) {
+  const url = new URL(window.location);
+  url.searchParams.set("lat", latitude);
+  url.searchParams.set("lng", longitude);
+  history.pushState({}, "", url);
+}
+
+function getLocation() {
+  const x = document.getElementById("id_location");
+
+  // Check if URL already has lat/lng params
+  const urlParams = new URLSearchParams(window.location.search);
+  const lat = urlParams.get("lat");
+  const lng = urlParams.get("lng");
+
+  if (lat && lng) {
+    // URL already has coordinates, use them
+    const location = sessionStorage.getItem("location");
+    if (location) {
+      x.value = location;
+    } else {
+      x.value = `${lat}, ${lng}`;
+    }
+    return;
+  }
+
+  // Check sessionStorage only if URL doesn't have params
+  const location = sessionStorage.getItem("location");
+  if (location) {
+    x.value = location;
+    return;
+  }
+
+  if (!x) {
+    console.error("Location input element not found");
+    return;
+  }
+
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      (position) => success(position, x),
+      (error) => handleError(error, x)
+    );
+  } else {
+    x.value = "Geolocation is not supported by this browser.";
+  }
+}
+
+function success(position, element) {
+  const { latitude, longitude } = position.coords;
+  element.value = `${latitude}, ${longitude}`;
+
+  // Get the address from the latitude and longitude
+  if (typeof google !== "undefined" && google.maps) {
+    const geocoder = new google.maps.Geocoder();
+    const latlng = { lat: parseFloat(latitude), lng: parseFloat(longitude) };
+
+    geocoder.geocode({ location: latlng }, (results, status) => {
+      if (status === "OK" && results[0]) {
+        element.value = results[0].formatted_address;
+        sessionStorage.setItem("location", results[0].formatted_address);
+        setLocation(latitude, longitude);
+        updateUrlWithCoordinates(latitude, longitude);
+      } else {
+        element.value = `${latitude}, ${longitude}`;
+        setLocation(latitude, longitude);
+        updateUrlWithCoordinates(latitude, longitude);
+      }
+    });
+  } else {
+    // Fallback if Google Maps is not available
+    element.value = `${latitude}, ${longitude}`;
+    updateUrlWithCoordinates(latitude, longitude);
+  }
+}
+
+function handleError(error, element) {
+  element.value = "Location unavailable";
+}
+
+// Password Toggle Functionality
+$(function () {
+  // Handle password toggle buttons
+  $(".password-toggle").on("click", function (e) {
+    e.preventDefault();
+
+    const targetId = $(this).data("target");
+    const passwordField = $("#" + targetId);
+    const icon = $(this).find("i");
+
+    if (passwordField.length === 0) {
+      // If field doesn't have an ID, try to find it as a sibling
+      const passwordInput = $(this)
+        .siblings('input[type="password"], input[type="text"]')
+        .first();
+
+      if (passwordInput.attr("type") === "password") {
+        passwordInput.attr("type", "text");
+        icon.removeClass("fa-eye").addClass("fa-eye-slash");
+      } else {
+        passwordInput.attr("type", "password");
+        icon.removeClass("fa-eye-slash").addClass("fa-eye");
+      }
+    } else {
+      // Field has an ID, use it directly
+      if (passwordField.attr("type") === "password") {
+        passwordField.attr("type", "text");
+        icon.removeClass("fa-eye").addClass("fa-eye-slash");
+      } else {
+        passwordField.attr("type", "password");
+        icon.removeClass("fa-eye-slash").addClass("fa-eye");
+      }
+    }
+  });
+
+  // Ensure password fields generated by Django forms get proper IDs
+  $('input[name="password"]').each(function () {
+    if (!$(this).attr("id")) {
+      $(this).attr("id", "id_password");
+    }
+  });
+
+  $('input[name="confirm_password"]').each(function () {
+    if (!$(this).attr("id")) {
+      $(this).attr("id", "id_confirm_password");
+    }
   });
 });

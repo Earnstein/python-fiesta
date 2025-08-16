@@ -81,7 +81,7 @@ def httpRegisterVendor(request):
              ## SEND VERIFICATION EMAIL
             send_custom_email(request, user, email_type='verification')
 
-            # HELPER PRINT STATEMENT (REMOVE IN PRODUCTION)
+            # TODO: HELPER PRINT STATEMENT (REMOVE IN PRODUCTION)
             print(f"{user.first_name} profile is created.")
 
             # SHOW A TOAST MESSAGE UPON SUCCESSFUL USER PROFILE CREATION
