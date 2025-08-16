@@ -3,8 +3,11 @@ from vendor.models import Vendor
 from django.contrib.gis.geos import GEOSGeometry
 from django.contrib.gis.db.models.functions import Distance
 from django.contrib.gis.measure import D
+from django.utils import timezone
 from typing import Optional, Tuple
 import logging
+import json
+from django.forms.models import model_to_dict
 
 logger = logging.getLogger('earneats')
 
@@ -40,6 +43,7 @@ def _get_nearby_vendors(lat: float, lng: float, radius_km: int = 10) -> list:
     
     vendors = (
         Vendor.approved
+        .with_opening_status()
         .filter(user_profile__location__distance_lte=(point, D(km=radius_km)))
         .annotate(distance=Distance("user_profile__location", point))
         .order_by("distance")
@@ -69,6 +73,7 @@ def home(request):
             nearby_vendor_ids = [vendor.id for vendor in nearby_vendors]
             other_vendors = (
                 Vendor.approved
+                .with_opening_status()
                 .exclude(id__in=nearby_vendor_ids)
                 .order_by('?')  # Random order for variety
                 [:MAX_VENDORS - len(nearby_vendors)]
@@ -78,7 +83,12 @@ def home(request):
             vendors = list(nearby_vendors) + list(other_vendors)
     else:
         # Fallback to featured vendors if no location data is available
-        vendors = Vendor.approved.all()[:MAX_VENDORS]
+        vendors = (
+            Vendor.approved
+            .with_opening_status()
+            [:MAX_VENDORS]
+        )
 
+    # Check if each vendor is currently open
     context = {"vendors": vendors}
     return render(request, 'home.html', context)
