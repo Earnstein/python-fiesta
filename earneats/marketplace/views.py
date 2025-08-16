@@ -18,7 +18,7 @@ FAILED = "failed"
 
 
 def marketplace(request):
-    vendor_list = Vendor.approved.with_opening_status().order_by("vendor_name")
+    vendor_list = Vendor.approved.with_opening_status().prefetch_related('opening_hours').order_by("vendor_name")
     
     paginator = Paginator(vendor_list, 3)
     page_number = request.GET.get("page", 1)
@@ -28,7 +28,14 @@ def marketplace(request):
         vendors = paginator.page(paginator.num_pages)
     except PageNotAnInteger:
         vendors = paginator.page(1)
-    context = {"vendors": vendors}
+    
+    # Get current day for opening hours display
+    current_day = timezone.now().isoweekday()
+    
+    context = {
+        "vendors": vendors,
+        "current_day": current_day
+    }
     return render(request, "marketplace/listings.html", context)
 
 
