@@ -6,7 +6,6 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
 from django.utils import timezone
 from django.contrib.gis.geos import GEOSGeometry
-from django.contrib.gis.db.models.functions import Distance
 from django.contrib.gis.measure import D
 from vendor.models import Vendor
 from menu.models import Category, FoodItem
@@ -217,22 +216,20 @@ def search(request):
         food_title__icontains=search_title, is_available=True
     )
 
-    # Get the vendors that match the search title and are approved and active
-    vendors = Vendor.approved.with_opening_status().filter(
-        Q(id__in=matching_food_items.values_list("vendor", flat=True))
-        | Q(vendor_name__icontains=search_title, is_approved=True, user__is_active=True)
-    )
-
     # filter the vendors by distance
     if _has_location_data(search_params):
         pnt = GEOSGeometry(f"POINT({search_params['longitude']} {search_params['latitude']})", srid=4326)
-        vendors = (
-            vendors.filter(user_profile__location__distance_lte=(pnt, D(km=search_params['radius'])))
-            .annotate(distance=Distance("user_profile__location", pnt))
-            .order_by("distance")
+        # Get the vendors that match the search title and are approved and active 
+        vendors = Vendor.approved.with_opening_status_and_distance(pnt).filter(
+            Q(id__in=matching_food_items.values_list("vendor", flat=True))
+            | Q(vendor_name__icontains=search_title, is_approved=True, user__is_active=True)
+        ).filter(user_profile__location__distance_lte=(pnt, D(km=search_params['radius']))).order_by("distance")
+    else:
+        # Get the vendors that match the search title and are approved and active (no distance filtering)
+        vendors = Vendor.approved.with_opening_status().filter(
+            Q(id__in=matching_food_items.values_list("vendor", flat=True))
+            | Q(vendor_name__icontains=search_title, is_approved=True, user__is_active=True)
         )
-        for vendor in vendors:
-            vendor.km = round(vendor.distance.km, 1)
 
     context = {
         "vendors": vendors,
