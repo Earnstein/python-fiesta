@@ -18,3 +18,34 @@
     font-size: 12px;
     cursor: pointer;
 }
+
+/* Password toggle styles */
+.password-field-wrapper {
+    position: relative;
+}
+
+.password-field-wrapper input {
+    padding-right: 35px;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #999;
+    background: none;
+    border: none;
+    padding: 0;
+    font-size: 16px;
+    z-index: 10;
+}
+
+.password-toggle:hover {
+    color: #666;
+}
+
+.password-toggle:focus {
+    outline: none;
+}

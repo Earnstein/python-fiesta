@@ -102,7 +102,12 @@
                                 >
                                   <div class="field-holder">
                                     <label>Password</label>
-                                    {{form.password}}
+                                    <div class="password-field-wrapper">
+                                      {{form.password}}
+                                      <button type="button" class="password-toggle" data-target="id_password">
+                                        <i class="fa fa-eye"></i>
+                                      </button>
+                                    </div>
                                   </div>
                                 </div>
                                 <div
@@ -110,7 +115,12 @@
                                 >
                                   <div class="field-holder">
                                     <label>Confirm Password</label>
-                                   {{ form.confirm_password }}
+                                    <div class="password-field-wrapper">
+                                      {{ form.confirm_password }}
+                                      <button type="button" class="password-toggle" data-target="id_confirm_password">
+                                        <i class="fa fa-eye"></i>
+                                      </button>
+                                    </div>
                                   </div>
                                 </div>
                               </li>
