@@ -158,6 +158,28 @@ class ApprovedManager(models.Manager):
             'id', 'vendor_name', 'vendor_slug', 'vendor_license',
             'user__email', 'user_profile__profile_picture'
         )
+    
+    def with_opening_status_and_distance(self, point):
+        """Get approved vendors with opening status and distance annotation."""
+        from django.contrib.gis.db.models.functions import Distance
+        
+        dt_info = self._get_current_datetime_info()
+        
+        # Create a subquery to check if vendor has opening hours for today
+        today_opening_hours = OpeningHours.objects.filter(
+            vendor=OuterRef('pk'),
+            day_of_week=dt_info['current_day'],
+            is_open=True,
+            from_hour__lte=dt_info['current_time'],
+            to_hour__gte=dt_info['current_time'],
+            from_hour__isnull=False,
+            to_hour__isnull=False,
+        )
+        
+        return self.get_queryset().annotate(
+            is_currently_open=Exists(today_opening_hours),
+            distance=Distance("user_profile__location", point)
+        ).select_related('user', 'user_profile')
 
 class Vendor(models.Model):
     user = models.OneToOneField(User, related_name="user", on_delete=models.CASCADE)
