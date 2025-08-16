@@ -4,7 +4,7 @@ from django.utils import timezone
 from datetime import time
 from accounts.models import User , UserProfile
 from accounts.utils import send_vendor_approval_email
-
+from django.db.models import Case, When, Value, BooleanField, Q, Exists, OuterRef, Prefetch
 
 DAY_OF_WEEK_CHOICES = [
     (1, 'Monday'),
@@ -19,8 +19,145 @@ DAY_OF_WEEK_CHOICES = [
 
 class ApprovedManager(models.Manager):
     def get_queryset(self) -> QuerySet['Vendor']:
+        """Base queryset for approved vendors only."""
         return super().get_queryset().filter(is_approved=True, user__is_active=True)
-
+    
+    def _get_current_datetime_info(self):
+        """Get current datetime info, can be cached if needed."""
+        now = timezone.now()
+        return {
+            'current_day': now.isoweekday(),
+            'current_time': now.time(),
+            'now': now
+        }
+    
+    def with_opening_status(self):
+        """Get approved vendors with their current opening status annotated."""
+        dt_info = self._get_current_datetime_info()
+        
+        # Create a subquery to check if vendor has opening hours for today
+        today_opening_hours = OpeningHours.objects.filter(
+            vendor=OuterRef('pk'),
+            day_of_week=dt_info['current_day'],
+            is_open=True,
+            from_hour__lte=dt_info['current_time'],
+            to_hour__gte=dt_info['current_time'],
+            from_hour__isnull=False,
+            to_hour__isnull=False,
+        )
+        
+        return self.get_queryset().annotate(
+            is_currently_open=Exists(today_opening_hours)
+        ).select_related('user', 'user_profile')
+    
+    def currently_open(self):
+        """Get only approved vendors that are currently open."""
+        dt_info = self._get_current_datetime_info()
+        
+        return self.get_queryset().filter(
+            opening_hours__day_of_week=dt_info['current_day'],
+            opening_hours__is_open=True,
+            opening_hours__from_hour__lte=dt_info['current_time'],
+            opening_hours__to_hour__gte=dt_info['current_time'],
+            opening_hours__from_hour__isnull=False,
+            opening_hours__to_hour__isnull=False,
+        ).select_related('user', 'user_profile').distinct()
+    
+    def currently_closed(self):
+        """Get only approved vendors that are currently closed."""
+        dt_info = self._get_current_datetime_info()
+        
+        # Get vendors that are either not open today or outside business hours
+        return self.get_queryset().exclude(
+            Q(opening_hours__day_of_week=dt_info['current_day']) &
+            Q(opening_hours__is_open=True) &
+            Q(opening_hours__from_hour__lte=dt_info['current_time']) &
+            Q(opening_hours__to_hour__gte=dt_info['current_time']) &
+            Q(opening_hours__from_hour__isnull=False) &
+            Q(opening_hours__to_hour__isnull=False)
+        ).select_related('user', 'user_profile').distinct()
+    
+    def with_todays_hours(self):
+        """Get approved vendors with today's opening hours prefetched."""
+        dt_info = self._get_current_datetime_info()
+        
+        return self.get_queryset().prefetch_related(
+            Prefetch(
+                'opening_hours',
+                queryset=OpeningHours.objects.filter(day_of_week=dt_info['current_day']),
+                to_attr='todays_hours'
+            )
+        ).select_related('user', 'user_profile')
+    
+    def with_complete_opening_status(self):
+        """Get approved vendors with opening status and today's hours."""
+        dt_info = self._get_current_datetime_info()
+        
+        # Create a subquery to check if vendor has opening hours for today
+        today_opening_hours = OpeningHours.objects.filter(
+            vendor=OuterRef('pk'),
+            day_of_week=dt_info['current_day'],
+            is_open=True,
+            from_hour__lte=dt_info['current_time'],
+            to_hour__gte=dt_info['current_time'],
+            from_hour__isnull=False,
+            to_hour__isnull=False,
+        )
+        
+        return self.get_queryset().prefetch_related(
+            Prefetch(
+                'opening_hours',
+                queryset=OpeningHours.objects.filter(day_of_week=dt_info['current_day']),
+                to_attr='todays_hours'
+            )
+        ).annotate(
+            is_currently_open=Exists(today_opening_hours)
+        ).select_related('user', 'user_profile')
+    
+    def open_at_time(self, check_time, day_of_week=None):
+        """Get approved vendors that are open at a specific time."""
+        if day_of_week is None:
+            day_of_week = timezone.now().isoweekday()
+        
+        return self.get_queryset().filter(
+            opening_hours__day_of_week=day_of_week,
+            opening_hours__is_open=True,
+            opening_hours__from_hour__lte=check_time,
+            opening_hours__to_hour__gte=check_time,
+            opening_hours__from_hour__isnull=False,
+            opening_hours__to_hour__isnull=False,
+        ).select_related('user', 'user_profile').distinct()
+    
+    def with_all_hours(self):
+        """Get approved vendors with all opening hours prefetched."""
+        return self.get_queryset().prefetch_related(
+            'opening_hours'
+        ).select_related('user', 'user_profile')
+    
+    def using_subquery_approach(self):
+        """Alternative approach using Exists subquery for opening status."""
+        dt_info = self._get_current_datetime_info()
+        
+        currently_open_subquery = OpeningHours.objects.filter(
+            vendor=OuterRef('pk'),
+            day_of_week=dt_info['current_day'],
+            is_open=True,
+            from_hour__lte=dt_info['current_time'],
+            to_hour__gte=dt_info['current_time'],
+            from_hour__isnull=False,
+            to_hour__isnull=False,
+        )
+        
+        return self.get_queryset().annotate(
+            is_currently_open=Exists(currently_open_subquery)
+        ).select_related('user', 'user_profile')
+    
+    def for_listing_page(self):
+        """Optimized query for vendor listing pages."""
+        return self.with_complete_opening_status().only(
+            'id', 'vendor_name', 'vendor_slug', 'vendor_license',
+            'user__email', 'user_profile__profile_picture'
+        )
 
 class Vendor(models.Model):
     user = models.OneToOneField(User, related_name="user", on_delete=models.CASCADE)
@@ -93,9 +230,16 @@ class OpeningHours(models.Model):
     class Meta:
         verbose_name = 'opening hours'
         verbose_name_plural = 'opening hours'
-        unique_together = (('vendor', 'day_of_week'),
-            ('day_of_week', 'from_hour', 'to_hour'))
+        unique_together = (('vendor', 'day_of_week'),)
         ordering = ['day_of_week']
+
+        
+        # indexes for better query performance
+        indexes = [
+            models.Index(fields=['day_of_week', 'vendor']),
+            models.Index(fields=['day_of_week', 'is_open', 'from_hour', 'to_hour']),
+            models.Index(fields=['vendor', 'day_of_week', 'is_open']),
+        ]
 
     def __str__(self):
         day_name = dict(DAY_OF_WEEK_CHOICES)[self.day_of_week]
