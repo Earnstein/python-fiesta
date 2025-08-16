@@ -1,6 +1,7 @@
 from django.db import models
 from vendor.models import Vendor
 from django.db.models import UniqueConstraint
+from django.core.exceptions import ValidationError
 
 class Category(models.Model):
     vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE, related_name="categories")
@@ -40,6 +41,17 @@ class FoodItem(models.Model):
     class Meta:
         verbose_name = 'food'
         verbose_name_plural = 'foods'
+
+    def clean(self):
+        # Ensure the category belongs to the same vendor
+        if self.category and self.vendor and self.category.vendor != self.vendor:
+            raise ValidationError("Food item must belong to a category from the same vendor.")
+        
+        self.food_title = self.food_title.capitalize()
+
+    def save(self, *args, **kwargs):
+        self.clean()
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.food_title
