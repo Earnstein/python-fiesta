@@ -4,6 +4,7 @@ from django.shortcuts import get_object_or_404
 from django.db.models import Prefetch, Q
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
+from django.utils import timezone
 from vendor.models import Vendor
 from menu.models import FoodItem
 from .models import Cart
@@ -47,7 +48,17 @@ def vendor_detail(request, vendor_slug):
     else:
         cart_items = None
 
-    context = {"vendor": vendor, "categories": categories, "cart_items": cart_items}
+    # Get opening hours and current day
+    opening_hours = vendor.get_all_opening_hours()
+    current_day = timezone.now().isoweekday()  # Monday=1, Sunday=7
+
+    context = {
+        "vendor": vendor, 
+        "categories": categories, 
+        "cart_items": cart_items, 
+        "opening_hours": opening_hours,
+        "current_day": current_day
+    }
     return render(request, "marketplace/vendor_detail.html", context)
 
 
