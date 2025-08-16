@@ -1,0 +1,56 @@
+{% load static %}
+
+<div class="delivery-timing reviews-sortby">
+    <div class="text">
+        <i class="icon-motorcycle"></i>
+        <p>
+            Delivery fee: £10.00<span>
+                Min Order : £10.00 Max Order : £50.00</span>
+        </p>
+    </div>
+    <ul>
+        <li>
+            <a href="#" class="reviews-sortby-active">
+                <span>Today :</span>
+                {% for hours in opening_hours %}
+                    {% if hours.day_of_week == current_day %}
+                        {% if hours.is_open %}
+                            {{ hours.get_formatted_hours }}
+                        {% else %}
+                            Closed
+                        {% endif %}
+                    {% endif %}
+                {% empty %}
+                    Not set
+                {% endfor %}
+                <i class="icon-chevron-small-down"></i>
+            </a>
+            <ul class="delivery-dropdown">
+                {% for hours in opening_hours %}
+                <li>
+                    <a href="#">
+                        <span class="opend-day">{{ hours.get_day_name }}</span>
+                        <span class="opend-time {% if not hours.is_open %}close-day{% endif %}">
+                            <small>:</small> 
+                            {% if hours.is_open %}
+                                {{ hours.get_formatted_hours }}
+                            {% else %}
+                                Closed
+                            {% endif %}
+                        </span>
+                    </a>
+                </li>
+                {% empty %}
+                <li>
+                    <a href="#">
+                        <span class="opend-day">No hours set</span>
+                        <span class="opend-time close-day">
+                            <small>:</small> Contact vendor
+                        </span>
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+        </li>
+    </ul>
+</div>
