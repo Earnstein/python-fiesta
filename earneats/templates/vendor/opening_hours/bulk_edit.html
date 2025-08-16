@@ -1,0 +1,193 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load vendor_tags %}
+
+{% block content %}
+<div class="main-section">
+    <div class="page-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="user-dashboard loader-holder">
+                        <div class="user-holder">
+                            <h4 class="text-uppercase">Bulk Edit Opening Hours</h4>
+                            
+                            {% if messages %}
+                                {% for message in messages %}
+                                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                        {{ message }}
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
+                            
+                            <div class="row">
+                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                    <div class="user-orders">
+                                        <div class="widget-header">
+                                            <h4 class="widget-title">Set Opening Hours for All Days</h4>
+                                            <p class="text-muted">Configure opening hours for each day of the week. Uncheck days that are closed.</p>
+                                        </div>
+                                        
+                                        <form method="POST" class="form-horizontal">
+                                            {% csrf_token %}
+                                            
+                                            <div class="row">
+                                                {% for day_num, day_name in day_choices %}
+                                                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 mb-4">
+                                                    <div class="card">
+                                                        <div class="card-header">
+                                                            <div class="form-check">
+                                                                <input type="checkbox" 
+                                                                       class="form-check-input day-checkbox" 
+                                                                       id="is_open_{{ day_num }}" 
+                                                                       name="is_open_{{ day_num }}"
+                                                                       {% if opening_hours_dict|get_item:day_num %}
+                                                                           {% if opening_hours_dict|get_item:day_num.is_open %}checked{% endif %}
+                                                                       {% endif %}>
+                                                <label class="form-check-label" for="is_open_{{ day_num }}">
+                                                    <strong>{{ day_name }}</strong>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="from_hour_{{ day_num }}">Opening Time</label>
+                                                        <input type="time" 
+                                                               class="form-control time-input" 
+                                                               id="from_hour_{{ day_num }}" 
+                                                               name="from_hour_{{ day_num }}"
+                                                               value="{% if opening_hours_dict|get_item:day_num %}{% if opening_hours_dict|get_item:day_num.is_open %}{{ opening_hours_dict|get_item:day_num.from_hour|time:'H:i' }}{% else %}09:00{% endif %}{% else %}09:00{% endif %}"
+                                                               {% if not opening_hours_dict|get_item:day_num or not opening_hours_dict|get_item:day_num.is_open %}disabled{% endif %}>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="to_hour_{{ day_num }}">Closing Time</label>
+                                                        <input type="time" 
+                                                               class="form-control time-input" 
+                                                               id="to_hour_{{ day_num }}" 
+                                                               name="to_hour_{{ day_num }}"
+                                                               value="{% if opening_hours_dict|get_item:day_num %}{% if opening_hours_dict|get_item:day_num.is_open %}{{ opening_hours_dict|get_item:day_num.to_hour|time:'H:i' }}{% else %}17:00{% endif %}{% else %}17:00{% endif %}"
+                                                               {% if not opening_hours_dict|get_item:day_num or not opening_hours_dict|get_item:day_num.is_open %}disabled{% endif %}>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            
+                            <div class="form-group mt-4">
+                                <button type="submit" class="btn btn-primary btn-lg mb-2 mb-sm-0">
+                                    <i class="icon-save"></i> <span class="d-none d-md-inline">Save All Opening Hours</span>
+                                </button>
+                                <a href="{% url 'opening_hours_list' %}" class="btn btn-secondary btn-lg">
+                                    <i class="icon-arrow-left"></i> <span class="d-none d-md-inline">Back to List</span>
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const dayCheckboxes = document.querySelectorAll('.day-checkbox');
+    
+    // Initialize time inputs based on checkbox state
+    function initializeTimeInputs() {
+        dayCheckboxes.forEach(checkbox => {
+            const dayNum = checkbox.id.split('_')[2];
+            const fromHourInput = document.getElementById(`from_hour_${dayNum}`);
+            const toHourInput = document.getElementById(`to_hour_${dayNum}`);
+            
+            if (checkbox.checked) {
+                fromHourInput.disabled = false;
+                toHourInput.disabled = false;
+                
+                // Set default times if empty
+                if (!fromHourInput.value) {
+                    fromHourInput.value = '09:00';
+                }
+                if (!toHourInput.value) {
+                    toHourInput.value = '17:00';
+                }
+            } else {
+                fromHourInput.disabled = true;
+                toHourInput.disabled = true;
+                // Don't clear values when disabled, just keep them for when re-enabled
+            }
+        });
+    }
+    
+    // Initialize on page load
+    initializeTimeInputs();
+    
+    // Handle checkbox changes
+    dayCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            const dayNum = this.id.split('_')[2];
+            const fromHourInput = document.getElementById(`from_hour_${dayNum}`);
+            const toHourInput = document.getElementById(`to_hour_${dayNum}`);
+            
+            if (this.checked) {
+                fromHourInput.disabled = false;
+                toHourInput.disabled = false;
+                
+                // Set default times if empty
+                if (!fromHourInput.value) {
+                    fromHourInput.value = '09:00';
+                }
+                if (!toHourInput.value) {
+                    toHourInput.value = '17:00';
+                }
+            } else {
+                fromHourInput.disabled = true;
+                toHourInput.disabled = true;
+                // Keep the values but disable the inputs
+            }
+        });
+    });
+    
+    // Add "Copy to All" functionality
+    const copyToAllBtn = document.createElement('button');
+    copyToAllBtn.type = 'button';
+    copyToAllBtn.className = 'btn btn-outline-secondary btn-sm ms-2';
+    copyToAllBtn.innerHTML = '<i class="icon-copy"></i> <span class="d-none d-md-inline">Copy Monday to All</span>';
+    copyToAllBtn.addEventListener('click', function() {
+        const mondayFrom = document.getElementById('from_hour_1').value;
+        const mondayTo = document.getElementById('to_hour_1').value;
+        const mondayOpen = document.getElementById('is_open_1').checked;
+        
+        for (let day = 2; day <= 7; day++) {
+            const checkbox = document.getElementById(`is_open_${day}`);
+            const fromInput = document.getElementById(`from_hour_${day}`);
+            const toInput = document.getElementById(`to_hour_${day}`);
+            
+            checkbox.checked = mondayOpen;
+            fromInput.value = mondayFrom;
+            toInput.value = mondayTo;
+            fromInput.disabled = !mondayOpen;
+            toInput.disabled = !mondayOpen;
+        }
+    });
+    
+    // Insert the button after the first checkbox
+    const firstCheckbox = document.querySelector('.day-checkbox');
+    if (firstCheckbox) {
+        firstCheckbox.parentElement.appendChild(copyToAllBtn);
+    }
+});
+</script>
+{% endblock %}
