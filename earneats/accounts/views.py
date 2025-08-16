@@ -213,7 +213,7 @@ def httpCustomerDashboard(request):
         "current_day": timezone.now().isoweekday(),
         "total_vendors": paginator.count,
         "has_location": bool(location)
-    }    
+    }
     return render(request, "accounts/customerDashboard.html", context)
 # VIEW THAT RESTRICT ACCESS TO ONLY VENDOR DASHBOARD
 @login_required(login_url='login')
