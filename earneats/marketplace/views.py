@@ -1,17 +1,17 @@
-from django.shortcuts import render, redirect
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.shortcuts import get_object_or_404
-from django.db.models import Prefetch, Q
-from django.http import JsonResponse
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.db.models import Q
 from django.utils import timezone
-from vendor.models import Vendor
-from menu.models import FoodItem
-from .models import Cart
-from .utils import is_ajax, get_total_cart_quantity, get_total_cart_price
 from django.contrib.gis.geos import GEOSGeometry
-from django.contrib.gis.measure import D
 from django.contrib.gis.db.models.functions import Distance
+from django.contrib.gis.measure import D
+from vendor.models import Vendor
+from menu.models import Category, FoodItem
+from marketplace.models import Cart
+from marketplace.utils import is_ajax, get_total_cart_quantity, get_total_cart_price
 
 
 SUCCESS = "success"
@@ -19,7 +19,8 @@ FAILED = "failed"
 
 
 def marketplace(request):
-    vendor_list = Vendor.approved.all().order_by("vendor_name")
+    vendor_list = Vendor.approved.with_opening_status().order_by("vendor_name")
+    
     paginator = Paginator(vendor_list, 3)
     page_number = request.GET.get("page", 1)
     try:
@@ -38,7 +39,7 @@ def vendor_detail(request, vendor_slug):
         vendor.categories.all()
         .order_by("category_name")
         .prefetch_related(
-            Prefetch("fooditems", queryset=FoodItem.objects.filter(is_available=True))
+            "fooditems",
         )
     )
 
@@ -217,7 +218,7 @@ def search(request):
     )
 
     # Get the vendors that match the search title and are approved and active
-    vendors = Vendor.approved.filter(
+    vendors = Vendor.approved.with_opening_status().filter(
         Q(id__in=matching_food_items.values_list("vendor", flat=True))
         | Q(vendor_name__icontains=search_title, is_approved=True, user__is_active=True)
     )
