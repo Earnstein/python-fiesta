@@ -54,12 +54,20 @@ def opening_hours_list(request):
     available_days = [(day_num, day_name) for day_num, day_name in DAY_OF_WEEK_CHOICES if day_num not in configured_days]
     available_days_count = len(available_days)
     
+    # Get current day for real-time status
+    current_day = timezone.now().isoweekday()
+    
+    # Check if any opening hours are currently open
+    currently_open = any(hours.is_currently_open() for hours in opening_hours)
+    
     context = {
         'vendor': vendor,
         'opening_hours': opening_hours,
         'day_choices': DAY_OF_WEEK_CHOICES,
         'available_days': available_days,
         'available_days_count': available_days_count,
+        'current_day': current_day,
+        'currently_open': currently_open,
     }
     return render(request, 'vendor/opening_hours/list.html', context)
 
