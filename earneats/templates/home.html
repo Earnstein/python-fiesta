@@ -136,8 +136,8 @@
 										{% endif %}
 
 										
-										{% if vendor.km %}
-											<address>{{ vendor.km }} km away</address>
+										{% if vendor.distance %}
+											<address>{{ vendor.distance.km|floatformat:1 }} km away</address>
 										{% endif %}
 											
 									</div>
