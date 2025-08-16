@@ -23,6 +23,29 @@
                             </div>
                             <div class="text-holder">
                                 <span class="restaurant-title">{{vendor.vendor_name}}</span>
+                                <div class="vendor-status-inline">
+                                    {% for hours in opening_hours %}
+                                        {% if hours.day_of_week == current_day %}
+                                            {% if hours.is_currently_open %}
+                                                <span class="status-inline status-open-inline">
+                                                    <i class="icon-check-circle"></i> Open Now
+                                                </span>
+                                            {% elif hours.is_open %}
+                                                <span class="status-inline status-closed-inline">
+                                                    <i class="icon-clock"></i> Closed
+                                                </span>
+                                            {% else %}
+                                                <span class="status-inline status-closed-inline">
+                                                    <i class="icon-x-circle"></i> Closed
+                                                </span>
+                                            {% endif %}
+                                        {% endif %}
+                                    {% empty %}
+                                        <span class="status-inline status-unknown-inline">
+                                            <i class="icon-info"></i> Hours not set
+                                        </span>
+                                    {% endfor %}
+                                </div>
                                 <div class="text">
                                     {% if vendor.user_profile.address  %}
                                         <i class="icon-location"></i>

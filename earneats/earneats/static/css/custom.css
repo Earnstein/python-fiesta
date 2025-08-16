@@ -1,51 +1,139 @@
 @keyframes show-toast {
-    0% {top: -100%}
-    20% {top: 100px}
-    80% {top: 100px}
-    100% {top: -100%}
+  0% {
+    top: -100%;
+  }
+  20% {
+    top: 100px;
+  }
+  80% {
+    top: 100px;
+  }
+  100% {
+    top: -100%;
+  }
 }
 
-
 .show-notification {
-    position: fixed;
-    right: 20px;
-    top: 100%;
-    animation: show-toast 8s;
+  position: fixed;
+  right: 20px;
+  top: 100%;
+  animation: show-toast 8s;
 }
 
 .btn {
-    padding: 2px 0.5rem;
-    font-size: 12px;
-    cursor: pointer;
+  padding: 2px 0.5rem;
+  font-size: 12px;
+  cursor: pointer;
 }
 
 /* Password toggle styles */
 .password-field-wrapper {
-    position: relative;
+  position: relative;
 }
 
 .password-field-wrapper input {
-    padding-right: 35px;
+  padding-right: 35px;
 }
 
 .password-toggle {
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    cursor: pointer;
-    color: #999;
-    background: none;
-    border: none;
-    padding: 0;
-    font-size: 16px;
-    z-index: 10;
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #999;
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 16px;
+  z-index: 10;
 }
 
 .password-toggle:hover {
-    color: #666;
+  color: #666;
 }
 
 .password-toggle:focus {
-    outline: none;
+  outline: none;
+}
+
+/* Vendor Status Inline Styles */
+.vendor-status-inline {
+  margin: 5px 0;
+}
+
+.status-inline {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 3px 10px;
+  border-radius: 4px;
+  margin-right: 10px;
+  color: white;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.status-inline i {
+  margin-right: 3px;
+  font-size: 11px;
+}
+
+/* Open Status */
+.status-open-inline {
+  background-color: #28a745;
+  box-shadow: 0 2px 4px rgba(40, 167, 69, 0.3);
+}
+
+/* Closed Status */
+.status-closed-inline {
+  background-color: #dc3545;
+  box-shadow: 0 2px 4px rgba(220, 53, 69, 0.3);
+}
+
+/* Unknown Status */
+.status-unknown-inline {
+  background-color: #6c757d;
+  box-shadow: 0 2px 4px rgba(108, 117, 125, 0.3);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .status-indicator {
+    flex-direction: column;
+    text-align: center;
+    padding: 25px 20px;
+  }
+
+  .status-icon {
+    margin-right: 0;
+    margin-bottom: 15px;
+  }
+
+  .status-content {
+    margin-right: 0;
+    margin-bottom: 15px;
+  }
+
+  .status-badge {
+    margin-top: 10px;
+  }
+}
+
+/* Opening Hours Dropdown Enhancements */
+.delivery-dropdown .badge {
+  font-size: 10px;
+  padding: 2px 6px;
+  margin-left: 5px;
+}
+
+.opend-time .text-success {
+  font-weight: 600;
+}
+
+.opend-time .text-warning {
+  font-weight: 500;
+}
+
+.opend-time .text-danger {
+  font-weight: 500;
 }

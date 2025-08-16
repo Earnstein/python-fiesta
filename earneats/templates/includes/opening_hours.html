@@ -14,14 +14,16 @@
                 <span>Today :</span>
                 {% for hours in opening_hours %}
                     {% if hours.day_of_week == current_day %}
-                        {% if hours.is_open %}
-                            {{ hours.get_formatted_hours }}
+                        {% if hours.is_currently_open %}
+                            <span class="text-success fw-bold">{{ hours.get_formatted_hours }} (Open Now)</span>
+                        {% elif hours.is_open %}
+                            <span class="text-muted">{{ hours.get_formatted_hours }} (Closed)</span>
                         {% else %}
-                            Closed
+                            <span class="text-danger">Closed</span>
                         {% endif %}
                     {% endif %}
                 {% empty %}
-                    Not set
+                    <span class="text-muted">Not set</span>
                 {% endfor %}
                 <i class="icon-chevron-small-down"></i>
             </a>
@@ -29,13 +31,24 @@
                 {% for hours in opening_hours %}
                 <li>
                     <a href="#">
-                        <span class="opend-day">{{ hours.get_day_name }}</span>
+                        <span class="opend-day">
+                            {{ hours.get_day_name }}
+                            {% if hours.day_of_week == current_day %}
+                                <span class="badge bg-primary">Today</span>
+                            {% endif %}
+                        </span>
                         <span class="opend-time {% if not hours.is_open %}close-day{% endif %}">
                             <small>:</small> 
-                            {% if hours.is_open %}
-                                {{ hours.get_formatted_hours }}
+                            {% if hours.is_currently_open %}
+                                <span class="text-success fw-bold">{{ hours.get_formatted_hours }} (Open Now)</span>
+                            {% elif hours.is_open %}
+                                {% if hours.day_of_week == current_day %}
+                                    <span class="text-warning">{{ hours.get_formatted_hours }} (Closed for today)</span>
+                                {% else %}
+                                    <span class="text-muted">{{ hours.get_formatted_hours }}</span>
+                                {% endif %}
                             {% else %}
-                                Closed
+                                <span class="text-danger">Closed</span>
                             {% endif %}
                         </span>
                     </a>

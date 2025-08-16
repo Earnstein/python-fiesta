@@ -1,17 +1,16 @@
-from django.shortcuts import render, redirect
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.shortcuts import get_object_or_404
-from django.db.models import Prefetch, Q
-from django.http import JsonResponse
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.db.models import Q
 from django.utils import timezone
-from vendor.models import Vendor
-from menu.models import FoodItem
-from .models import Cart
-from .utils import is_ajax, get_total_cart_quantity, get_total_cart_price
 from django.contrib.gis.geos import GEOSGeometry
 from django.contrib.gis.measure import D
-from django.contrib.gis.db.models.functions import Distance
+from vendor.models import Vendor
+from menu.models import Category, FoodItem
+from marketplace.models import Cart
+from marketplace.utils import is_ajax, get_total_cart_quantity, get_total_cart_price
 
 
 SUCCESS = "success"
@@ -19,7 +18,8 @@ FAILED = "failed"
 
 
 def marketplace(request):
-    vendor_list = Vendor.approved.all().order_by("vendor_name")
+    vendor_list = Vendor.approved.with_opening_status().prefetch_related('opening_hours').order_by("vendor_name")
+    
     paginator = Paginator(vendor_list, 3)
     page_number = request.GET.get("page", 1)
     try:
@@ -28,7 +28,14 @@ def marketplace(request):
         vendors = paginator.page(paginator.num_pages)
     except PageNotAnInteger:
         vendors = paginator.page(1)
-    context = {"vendors": vendors}
+    
+    # Get current day for opening hours display
+    current_day = timezone.now().isoweekday()
+    
+    context = {
+        "vendors": vendors,
+        "current_day": current_day
+    }
     return render(request, "marketplace/listings.html", context)
 
 
@@ -38,7 +45,7 @@ def vendor_detail(request, vendor_slug):
         vendor.categories.all()
         .order_by("category_name")
         .prefetch_related(
-            Prefetch("fooditems", queryset=FoodItem.objects.filter(is_available=True))
+            "fooditems",
         )
     )
 
@@ -216,22 +223,20 @@ def search(request):
         food_title__icontains=search_title, is_available=True
     )
 
-    # Get the vendors that match the search title and are approved and active
-    vendors = Vendor.approved.filter(
-        Q(id__in=matching_food_items.values_list("vendor", flat=True))
-        | Q(vendor_name__icontains=search_title, is_approved=True, user__is_active=True)
-    )
-
     # filter the vendors by distance
     if _has_location_data(search_params):
         pnt = GEOSGeometry(f"POINT({search_params['longitude']} {search_params['latitude']})", srid=4326)
-        vendors = (
-            vendors.filter(user_profile__location__distance_lte=(pnt, D(km=search_params['radius'])))
-            .annotate(distance=Distance("user_profile__location", pnt))
-            .order_by("distance")
+        # Get the vendors that match the search title and are approved and active 
+        vendors = Vendor.approved.with_opening_status_and_distance(pnt).filter(
+            Q(id__in=matching_food_items.values_list("vendor", flat=True))
+            | Q(vendor_name__icontains=search_title, is_approved=True, user__is_active=True)
+        ).filter(user_profile__location__distance_lte=(pnt, D(km=search_params['radius']))).order_by("distance")
+    else:
+        # Get the vendors that match the search title and are approved and active (no distance filtering)
+        vendors = Vendor.approved.with_opening_status().filter(
+            Q(id__in=matching_food_items.values_list("vendor", flat=True))
+            | Q(vendor_name__icontains=search_title, is_approved=True, user__is_active=True)
         )
-        for vendor in vendors:
-            vendor.km = round(vendor.distance.km, 1)
 
     context = {
         "vendors": vendors,
