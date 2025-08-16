@@ -1,10 +1,10 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages, auth
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils.http import urlsafe_base64_decode
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.text import slugify
-from .forms import UserForm
+from .forms import UserForm, UserProfileForm
 from .models import User, UserProfile
 from vendor.forms import VendorForm
 from accounts.utils import check_role_customer, check_role_vendor, get_user_role, send_custom_email
@@ -215,6 +215,34 @@ def httpCustomerDashboard(request):
         "has_location": bool(location)
     }
     return render(request, "accounts/customerDashboard.html", context)
+
+# CUSTOMER PROFILE VIEW
+@login_required(login_url='login')
+@user_passes_test(check_role_customer)
+def httpCustomerProfile(request):
+    """
+    View for displaying and updating customer profile. Only accessible to customers.
+    """
+    profile = get_object_or_404(UserProfile, user=request.user)
+    
+    if request.method == "POST":
+        profile_form = UserProfileForm(request.POST, request.FILES, instance=profile)
+        if profile_form.is_valid():
+            profile_form.save()
+            messages.success(request, "Profile updated successfully")
+            return redirect("customerProfile")
+        else:
+            messages.error(request, "Error updating profile")
+            print(profile_form.errors)
+    else:
+        profile_form = UserProfileForm(instance=profile)
+    
+    context = {
+        "profile_form": profile_form,
+        "profile": profile,
+    }
+    return render(request, "accounts/customerProfile.html", context)
+
 # VIEW THAT RESTRICT ACCESS TO ONLY VENDOR DASHBOARD
 @login_required(login_url='login')
 @user_passes_test(check_role_vendor, login_url="login")
