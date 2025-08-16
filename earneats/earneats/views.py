@@ -43,15 +43,10 @@ def _get_nearby_vendors(lat: float, lng: float, radius_km: int = 10) -> list:
     
     vendors = (
         Vendor.approved
-        .with_opening_status()
+        .with_opening_status_and_distance(point)
         .filter(user_profile__location__distance_lte=(point, D(km=radius_km)))
-        .annotate(distance=Distance("user_profile__location", point))
         .order_by("distance")
     )
-    
-    # Add distance to each vendor object
-    for vendor in vendors:
-        vendor.km = round(vendor.distance.km, 1)
     
     return list(vendors)
 
