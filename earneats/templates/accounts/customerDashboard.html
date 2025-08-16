@@ -45,262 +45,118 @@
                                     <div class="user-suggest-list listing simple">
                                         <div class="element-title">
                                             <h5>Suggested Restaurants</h5>
-                                            <span>Define <em data-target="#suggestions-box" data-toggle="modal">Search criteria</em> to search for specific</span>
+                                            <span>
+                                                {% if has_location %}
+                                                    Showing nearby restaurants first, then others
+                                                {% else %}
+                                                    Showing all available restaurants
+                                                {% endif %}
+                                                <em data-target="#suggestions-box" data-toggle="modal">Search criteria</em> to search for specific
+                                            </span>
                                         </div>
                                         <ul class="user-suggest-list-holder">
+                                            {% for vendor in vendors %}
                                             <li>
                                                 <div class="suggest-list-holder">
                                                     <div class="img-holder">
                                                         <figure>
-                                                            <a href="listings.html"><img src="{% static 'images/default-profile.PNG' %}" alt=""> </a>
+                                                            <a href="{% url 'vendor_detail' vendor.vendor_slug %}">
+                                                                {% if vendor.user_profile.profile_picture %}
+                                                                    <img src="{{ vendor.user_profile.profile_picture.url }}" alt="{{ vendor.vendor_name }}">
+                                                                {% else %}
+                                                                    <img src="{% static 'images/default-profile.PNG' %}" alt="{{ vendor.vendor_name }}">
+                                                                {% endif %}
+                                                            </a>
                                                         </figure>
                                                     </div>
                                                     <div class="text-holder">
                                                         <div class="post-title">
-                                                            <h5><a href="listings.html">Dragon Express</a></h5>
+                                                            <h5>
+                                                                {% for hours in vendor.opening_hours.all %}
+                                                                    {% if hours.day_of_week == current_day %}
+                                                                        {% if hours.is_currently_open %}
+                                                                            <span class="status-inline status-open-inline">
+                                                                                <i class="icon-check-circle"></i> Open Now
+                                                                            </span>
+                                                                        {% elif hours.is_open %}
+                                                                            <span class="status-inline status-closed-inline">
+                                                                                <i class="icon-clock"></i> Closed
+                                                                            </span>
+                                                                        {% else %}
+                                                                            <span class="status-inline status-closed-inline">
+                                                                                <i class="icon-x-circle"></i> Closed
+                                                                            </span>
+                                                                        {% endif %}
+                                                                    {% endif %}
+                                                                {% empty %}
+                                                                    <span class="status-inline status-unknown-inline">
+                                                                        <i class="icon-info"></i> Hours not set
+                                                                    </span>
+                                                                {% endfor %}
+                                                                <a href="{% url 'vendor_detail' vendor.vendor_slug %}">{{ vendor.vendor_name }}</a>
+                                                            </h5>
                                                         </div>
-                                                        <span class="post-categories"> Apple Juice , Carrot Juice , Ice Cream </span>
-                                                        <div class="list-option">
-                                                            <a href="#" class="shortlist-btn shortlisted"><i class="icon-heart4"></i></a>
-                                                            <a href="listings.html" class="viewmenu-btn">View Menu</a>
-                                                        </div>
-                                                        <div class="delivery-potions">
-                                                            <div class="post-time">
-                                                                <i class="icon-motorcycle"></i>
-                                                                <div class="time-tooltip">
-                                                                    <div class="time-tooltip-holder"><b class="tooltip-label">Delivery time</b><b class="tooltip-info">10</b> </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="post-time">
-                                                                <i class="icon-clock4"></i>
-                                                                <div class="time-tooltip">
-                                                                    <div class="time-tooltip-holder"> <b class="tooltip-label">Pickup time</b> <b class="tooltip-info">15</b> </div>
-                                                                </div>
-                                                            </div>
-                                                            <span>10-11 Bethel Square, Brecon LD3 7JP, UK</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div class="suggest-list-holder">
-                                                    <div class="img-holder">
-                                                        <figure>
-                                                            <a href="listings.html"><img src="{% static 'images/default-profile.PNG' %}" alt=""> </a>
-                                                        </figure>
-                                                    </div>
-                                                    <div class="text-holder">
-                                                        <div class="post-title">
-                                                            <h5><a href="listings.html">Restaurant Demo </a></h5>
-                                                        </div>
-                                                        <span class="post-categories"> Type of food : Apple Juice</span>
-                                                        <div class="list-option">
-                                                            <a href="#" class="shortlist-btn shortlist-btn"><i class="icon-heart-o"></i> </a>
-                                                            <a href="listings.html" class="viewmenu-btn">View Menu</a>
-                                                        </div>
-                                                        <div class="delivery-potions">
-                                                            <div class="post-time">
-                                                                <i class="icon-motorcycle"></i>
-                                                                <div class="time-tooltip">
-                                                                    <div class="time-tooltip-holder"><b class="tooltip-label">Delivery time</b><b class="tooltip-info">10</b> </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="post-time">
-                                                                <i class="icon-clock4"></i>
-                                                                <div class="time-tooltip">
-                                                                    <div class="time-tooltip-holder"> <b class="tooltip-label">Pickup time</b> <b class="tooltip-info">15</b> </div>
-                                                                </div>
-                                                            </div>
-                                                            <span>Totnes, Devon</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div class="img-holder">
-                                                    <figure>
-                                                        <a href="#"> <img src="{% static 'images/default-profile.PNG' %}" class="img-list wp-post-image" alt=""> </a>
-                                                    </figure>
-                                                </div>
-                                                <div class="text-holder">
-                                                    <div class="post-title">
-                                                        <h5>
-                                                            <a href="listing-detail.html">Jet’s Kitchen</a>
-                                                        </h5>
-                                                    </div>
-                                                    <span class="post-categories"><span>Type of food :
-                                                        </span> Chines
-                                                        Soup, Egg Fry, Fish Fry</span>
-                                                    <div class="delivery-potions">
-                                                        <div class="post-time">
-                                                            <i class="icon-motorcycle"></i>
-                                                            <div class="time-tooltip">
-                                                                <div class="time-tooltip-holder"> <b class="tooltip-label">Delivery
-                                                                        time</b> <b class="tooltip-info">Your order will
-                                                                        be
-                                                                        delivered in 10 minutes.</b> </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="post-time">
-                                                            <i class="icon-clock4"></i>
-                                                            <div class="time-tooltip">
-                                                                <div class="time-tooltip-holder"> <b class="tooltip-label">Pickup
-                                                                        time</b> <b class="tooltip-info">You
-                                                                        can pickup order in
-                                                                        15 minutes.</b> </div>
-                                                            </div>
-                                                        </div>
-                                                        <span>Montrose, Angus</span>
-                                                    </div>
-                                                </div>
-                                                <div class="list-option">
-                                                    <a href="javascript:void(0);" class="shortlist-btn" data-toggle="modal" data-target="#sign-in"><i class="icon-heart-o"></i> </a>
-                                                    <a href="#" class="viewmenu-btn text-color">View Menu</a>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div class="img-holder">
-                                                    <figure>
-                                                        <a href="#"><img src="{% static 'images/default-profile.PNG' %}" class="img-list wp-post-image" alt=""> </a>
-                                                    </figure>
-                                                </div>
-                                                <div class="text-holder">
-                                                    <div class="post-title">
-                                                        <h5>
-                                                            <a href="listing-detail.html">Golden Chick Fries</a>
-                                                            <span class="sponsored text-color">Sponsored</span>
-                                                        </h5>
-                                                    </div>
-                                                    <span class="post-categories"><span>Type of food :
+                                                        <span class="post-categories">
+                                                            {% for category in vendor.categories.all|slice:":3" %}
+                                                                {{ category.category_name }}{% if not forloop.last %}, {% endif %}
+                                                            {% empty %}
+                                                                No categories available
+                                                            {% endfor %}
                                                         </span>
-                                                        Doughnut, Hot Dogs, Ice Cream</span>
-                                                    <div class="delivery-potions">
-                                                        <div class="post-time">
-                                                            <i class="icon-motorcycle"></i>
-                                                            <div class="time-tooltip">
-                                                                <div class="time-tooltip-holder"> <b class="tooltip-label">Delivery
-                                                                        time</b>
-                                                                    <b class="tooltip-info">Your order will
-                                                                        be
-                                                                        delivered in 10 minutes.</b>
-                                                                </div>
-                                                            </div>
+                                                        <div class="list-option">
+                                                            <a href="javascript:void(0);" class="shortlist-btn" data-toggle="modal" data-target="#sign-in">
+                                                                <i class="icon-heart-o"></i>
+                                                            </a>
+                                                            <a href="{% url 'vendor_detail' vendor.vendor_slug %}" class="viewmenu-btn">View Menu</a>
                                                         </div>
-                                                        <div class="post-time">
-                                                            <i class="icon-clock4"></i>
-                                                            <div class="time-tooltip">
-                                                                <div class="time-tooltip-holder"> <b class="tooltip-label">Pickup
-                                                                        time</b>
-                                                                    <b class="tooltip-info">You can pickup
-                                                                        order in
-                                                                        15 minutes.</b>
-                                                                </div>
+                                                        <div class="delivery-potions">
+                                                            <div class="post-time">
+                                                                <i class="icon-clock"></i>
+                                                                {% for hours in vendor.opening_hours.all %}
+                                                                    {% if hours.day_of_week == current_day %}
+                                                                        {% if hours.is_currently_open %}
+                                                                            <span class="text-success">{{ hours.get_formatted_hours }} (Open Now)</span>
+                                                                        {% elif hours.is_open %}
+                                                                            <span class="text-muted">{{ hours.get_formatted_hours }} (Closed for today)</span>
+                                                                        {% else %}
+                                                                            <span class="text-danger">Closed today</span>
+                                                                        {% endif %}
+                                                                    {% endif %}
+                                                                {% empty %}
+                                                                    <span class="text-muted">Hours not set</span>
+                                                                {% endfor %}
                                                             </div>
+                                                            {% if vendor.distance %}
+                                                            <div class="post-time">
+                                                                <i class="icon-location"></i>
+                                                                <span>{{ vendor.user_profile.address }}
+
+                                                                    {% if vendor.distance %}
+                                                                    , {{ vendor.distance.km|floatformat:1 }} km away
+                                                                    {% endif %}
+                                                                </span>
+                                                            </div>
+                                                            {% endif %}
                                                         </div>
-                                                        <span>Leyton, Greater London</span>
                                                     </div>
                                                 </div>
-                                                <div class="list-option">
-                                                    <a href="javascript:void(0);" class="shortlist-btn" data-toggle="modal" data-target="#sign-in">
-                                                        <i class="icon-heart-o"></i> </a>
-                                                    <a href="#" class="viewmenu-btn text-color">View Menu</a>
-                                                </div>
                                             </li>
+                                            {% empty %}
                                             <li>
-                                                <div class="img-holder">
-                                                    <figure>
-                                                        <a href="#"><img src="{% static 'images/default-profile.PNG' %}" class="img-list wp-post-image" alt=""> </a>
-                                                    </figure>
-                                                </div>
-                                                <div class="text-holder">
-                                                    <div class="post-title">
-                                                        <h5>
-                                                            <a href="listing-detail.html">Nature Healthy Food</a>
-                                                        </h5>
-                                                    </div>
-                                                    <span class="post-categories"><span>Type of food :
-                                                        </span> Apple
-                                                        Juice, Chicken Roast, Chines Soup, Magi</span>
-                                                    <div class="delivery-potions">
-                                                        <div class="post-time">
-                                                            <i class="icon-motorcycle"></i>
-                                                            <div class="time-tooltip">
-                                                                <div class="time-tooltip-holder"> <b class="tooltip-label">Delivery
-                                                                        time</b> <b class="tooltip-info">Your order will
-                                                                        be
-                                                                        delivered in 10 minutes.</b> </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="post-time">
-                                                            <i class="icon-clock4"></i>
-                                                            <div class="time-tooltip">
-                                                                <div class="time-tooltip-holder"> <b class="tooltip-label">Pickup
-                                                                        time</b> <b class="tooltip-info">You
-                                                                        can pickup order in
-                                                                        15 minutes.</b> </div>
-                                                            </div>
-                                                        </div>
-                                                        <span>Bristol, Bristol</span>
-                                                    </div>
-                                                </div>
-                                                <div class="list-option">
-                                                    <a href="javascript:void(0);" class="shortlist-btn" data-toggle="modal" data-target="#sign-in"><i class="icon-heart-o"></i> </a>
-                                                    <a href="#" class="viewmenu-btn text-color">View Menu</a>
+                                                <div class="text-center" style="padding: 40px 20px;">
+                                                    <h4>No restaurants found</h4>
+                                                    <p class="text-muted">Try adjusting your search criteria or location settings.</p>
                                                 </div>
                                             </li>
-                                            <li>
-                                                <div class="img-holder">
-                                                    <figure>
-                                                        <a href="#"><img src="{% static 'images/default-profile.PNG' %}" class="img-list wp-post-image" alt=""> </a>
-                                                    </figure>
-                                                </div>
-                                                <div class="text-holder">
-                                                    <div class="post-title">
-                                                        <h5>
-                                                            <a href="listing-detail.html">Burger King</a>
-                                                        </h5>
-                                                    </div>
-                                                    <span class="post-categories"><span>Type of food :
-                                                        </span> Beef
-                                                        Roast, Doughnut, Prawns</span>
-                                                    <div class="delivery-potions">
-                                                        <div class="post-time">
-                                                            <i class="icon-motorcycle"></i>
-                                                            <div class="time-tooltip">
-                                                                <div class="time-tooltip-holder"> <b class="tooltip-label">Delivery
-                                                                        time</b> <b class="tooltip-info">Your order will
-                                                                        be
-                                                                        delivered in 10 minutes.</b> </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="post-time">
-                                                            <i class="icon-clock4"></i>
-                                                            <div class="time-tooltip">
-                                                                <div class="time-tooltip-holder"> <b class="tooltip-label">Pickup
-                                                                        time</b> <b class="tooltip-info">You
-                                                                        can pickup order in
-                                                                        15 minutes.</b> </div>
-                                                            </div>
-                                                        </div>
-                                                        <span>Bridport, Dorset</span>
-                                                    </div>
-                                                </div>
-                                                <div class="list-option">
-                                                    <a href="javascript:void(0);" class="shortlist-btn" data-toggle="modal" data-target="#sign-in">
-                                                        <i class="icon-heart-o"></i> </a>
-                                                    <a href="#" class="viewmenu-btn text-color">View Menu</a>
-                                                </div>
-                                            </li>
+                                            {% endfor %}
                                         </ul>
                                     </div>
+                                    
+                                    {% if vendors.has_other_pages %}
                                     <ul class="pagination">
-                                        <li class="active"><a>1</a></li>
-                                        <li><a href="#">2</a></li>
-                                        <li><a href="#">3</a></li>
-                                        <li><span class="page-numbers dots">…</span></li>
-                                        <li><a href="#">24</a></li>
-                                        <li><a href="#">Next </a></li>
+                                        {% include 'marketplace/includes/pagination.html' with page=vendors %}
                                     </ul>
+                                    {% endif %}
                                 </div>
                             </div>
                             <div class="modal fade" id="suggestions-box" tabindex="-1" role="dialog" style="display: none;">
