@@ -1,11 +1,12 @@
 from django.urls import path, include
 from . import views
 
+app_name = 'vendor'
 
 urlpatterns = [
-    path("profile/", views.profileView, name="vendorProfile"),
-    path("", views.httpVendorDashboard, name="vendorDashboard"),
-    path("settings/", views.vendorSettings, name="vendorSettings"),
+    path("", views.httpVendorDashboard, name="dashboard"),
+    path("profile/", views.profileView, name="profile"),
+    path("settings/", views.vendorSettings, name="settings"),
     path("menu/", include("menu.urls")),
     
     # Opening Hours CRUD
