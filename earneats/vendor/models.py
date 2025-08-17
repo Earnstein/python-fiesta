@@ -1,10 +1,9 @@
 from django.db import models
 from django.db.models import QuerySet
 from django.utils import timezone
-from datetime import time
 from accounts.models import User , UserProfile
 from accounts.utils import send_vendor_approval_email
-from django.db.models import Case, When, Value, BooleanField, Q, Exists, OuterRef, Prefetch
+from django.db.models import Q, Exists, OuterRef, Prefetch
 
 DAY_OF_WEEK_CHOICES = [
     (1, 'Monday'),

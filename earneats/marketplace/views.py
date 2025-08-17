@@ -87,16 +87,16 @@ def add_to_cart(request, food_id):
         cart.quantity += 1
         cart.save()
     total_quantity = get_total_cart_quantity(request.user)
-    subtotal, tax, total = get_total_cart_price(request.user).values()
+    cart_data = get_total_cart_price(request.user)
     return JsonResponse(
         {
             "status": SUCCESS,
             "message": f"{food_item.food_title} added to cart successfully",
             "total_quantity": total_quantity,
             "qty": cart.quantity,
-            "subtotal": subtotal,
-            "tax": tax,
-            "total": total,
+            "subtotal": cart_data["subtotal"],
+            "tax": cart_data["tax"],
+            "total": cart_data["total"],
         }
     )
 
@@ -115,14 +115,14 @@ def remove_from_cart(request, food_id):
     cart = Cart.objects.filter(user=request.user, fooditem=food_item).first()
 
     if not cart or cart.quantity == 0:
-        subtotal, tax, total = get_total_cart_price(request.user).values()
+        cart_data = get_total_cart_price(request.user)
         return JsonResponse(
             {
                 "status": SUCCESS,
                 "message": "Your cart is empty",
-                "subtotal": subtotal,
-                "tax": tax,
-                "total": total,
+                "subtotal": cart_data["subtotal"],
+                "tax": cart_data["tax"],
+                "total": cart_data["total"],
             }
         )
 
@@ -130,16 +130,16 @@ def remove_from_cart(request, food_id):
         cart.quantity -= 1
         cart.save()
     total_quantity = get_total_cart_quantity(request.user)
-    subtotal, tax, total = get_total_cart_price(request.user).values()
+    cart_data = get_total_cart_price(request.user)
     return JsonResponse(
         {
             "status": SUCCESS,
             "message": f"{food_item.food_title} removed from cart successfully",
             "total_quantity": total_quantity,
             "qty": cart.quantity,
-            "subtotal": subtotal,
-            "tax": tax,
-            "total": total,
+            "subtotal": cart_data["subtotal"],
+            "tax": cart_data["tax"],
+            "total": cart_data["total"],
         }
     )
 
@@ -170,15 +170,15 @@ def delete_cart(request, cart_id):
 
     cart_item.delete()
     total_quantity = get_total_cart_quantity(request.user)
-    subtotal, tax, total = get_total_cart_price(request.user).values()
+    cart_data = get_total_cart_price(request.user)
     return JsonResponse(
         {
             "status": SUCCESS,
             "message": "Cart item deleted successfully",
             "total_quantity": total_quantity,
-            "subtotal": subtotal,
-            "tax": tax,
-            "total": total,
+            "subtotal": cart_data["subtotal"],
+            "tax": cart_data["tax"],
+            "total": cart_data["total"],
         }
     )
 
