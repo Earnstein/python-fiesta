@@ -2,7 +2,6 @@ from django import forms
 from .models import User, UserProfile
 from .form_validations import allow_images_only
 from phonenumber_field.formfields import PhoneNumberField
-from phonenumber_field.formfields import SplitPhoneNumberField
 class UserForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': 'Enter your password'}))
     confirm_password = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': 'Confirm your password'}))
