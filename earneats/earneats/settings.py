@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     "marketplace.apps.MarketplaceConfig",
     "django.contrib.postgres",
     "django_countries",
+    "phonenumber_field",
 ]
 
 MIDDLEWARE = [
