@@ -20,7 +20,7 @@
                             <p>Update your basic account information below.</p>
                             
                             <!-- Customer Settings Form Start -->
-                            <form action="{% url 'customerSettings' %}" method="POST">
+                            <form action="{% url 'customers:settings' %}" method="POST">
                                 {% csrf_token %}
                                 <div class="form-fields-set">
                                     <ul>
