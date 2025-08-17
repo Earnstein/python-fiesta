@@ -44,7 +44,7 @@ def createCategory(request):
             try:
                 category.save()
                 messages.success(request, "Category created successfully")
-                return redirect('menu')
+                return redirect('vendor:menu')
             except IntegrityError:
                 messages.error(request, f"{category_name} exists")
     context = {"form": form}
@@ -61,7 +61,7 @@ def updateCategory(request, pk=None):
         if form.is_valid():
             category.save()
             messages.success(request, "Category updated successfully")
-            return redirect("menu")
+            return redirect("vendor:menu")
     context = {"form": form, "category": category}
     return render(request, "vendor/category/updateCategory.html", context)
 
@@ -73,7 +73,7 @@ def deleteCategory(request, pk=None):
     category = get_object_or_404(Category, pk=pk)    
     category.delete()
     messages.success(request, "Category deleted successfully")
-    return redirect("menu")
+    return redirect("vendor:menu")
         
 
 
@@ -91,7 +91,7 @@ def createFood(request):
             food_form.slug = slugify(food_title)
             food_form.save()
             messages.success(request, "Food was added successfully")
-            return redirect("getCategory", food_form.category.id)
+            return redirect("vendor:getCategory", food_form.category.id)
     context = {"form": form}
     return render(request, "vendor/food/createFood.html", context)
 
@@ -106,7 +106,7 @@ def updateFood(request, pk=None):
         if form.is_valid():
             form.save()
             messages.success(request, "Item was updated successfully")
-            return redirect("getCategory", food_item.category.id)
+            return redirect("vendor:getCategory", food_item.category.id)
     context = { "form": form,"food_item": food_item }
     return render(request, "vendor/food/updateFood.html", context)
 
@@ -117,4 +117,4 @@ def deleteFood(request, pk=None):
     food_item = get_object_or_404(FoodItem, pk=pk)
     food_item.delete()
     messages.success(request, f"{food_item.food_title} is succussfully deleted.")
-    return redirect("menu")
+    return redirect("vendor:menu")
