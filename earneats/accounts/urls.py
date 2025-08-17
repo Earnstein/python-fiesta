@@ -14,7 +14,9 @@ urlpatterns = [
     path("myAccount/", views.httpGetUserAccount, name="userAccount"),
     path("customerDashboard/", views.httpCustomerDashboard, name="customerDashboard"),
     path("customerProfile/", views.httpCustomerProfile, name="customerProfile"),
+    path("customerSettings/", views.customerSettings, name="customerSettings"),
     path("vendorDashboard/", views.httpVendorDashboard, name="vendorDashboard"),
+    path("vendorSettings/", views.vendorSettings, name="vendorSettings"),
     path("activate/<uidb64>/<token>/", views.activate, name="activate"),
 
     # FORGOT PASSWORD AND RESET PASSWORD
