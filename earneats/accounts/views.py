@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils.http import urlsafe_base64_decode
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.text import slugify
-from .forms import UserForm, UserProfileForm
+from .forms import UserForm, UserProfileForm, UserSettingsForm
 from .models import User, UserProfile
 from vendor.forms import VendorForm
 from accounts.utils import check_role_customer, check_role_vendor, get_user_role, send_custom_email
@@ -242,6 +242,58 @@ def httpCustomerProfile(request):
         "profile": profile,
     }
     return render(request, "accounts/customerProfile.html", context)
+
+
+# CUSTOMER SETTINGS VIEW
+@login_required(login_url='login')
+@user_passes_test(check_role_customer)
+def customerSettings(request):
+    """
+    View for updating customer basic information (firstname, lastname, username, phone_number).
+    Only accessible to customers.
+    """
+    if request.method == "POST":
+        settings_form = UserSettingsForm(request.POST, instance=request.user)
+        if settings_form.is_valid():
+            settings_form.save()
+            messages.success(request, "Settings updated successfully")
+            return redirect("customerSettings")
+        else:
+            messages.error(request, "Error updating settings")
+            print(settings_form.errors)
+    else:
+        settings_form = UserSettingsForm(instance=request.user)
+    
+    context = {
+        "settings_form": settings_form,
+    }
+    return render(request, "accounts/customerSettings.html", context)
+
+
+# VENDOR SETTINGS VIEW
+@login_required(login_url='login')
+@user_passes_test(check_role_vendor)
+def vendorSettings(request):
+    """
+    View for updating vendor basic information (firstname, lastname, username, phone_number).
+    Only accessible to vendors.
+    """
+    if request.method == "POST":
+        settings_form = UserSettingsForm(request.POST, instance=request.user)
+        if settings_form.is_valid():
+            settings_form.save()
+            messages.success(request, "Settings updated successfully")
+            return redirect("vendorSettings")
+        else:
+            messages.error(request, "Error updating settings")
+            print(settings_form.errors)
+    else:
+        settings_form = UserSettingsForm(instance=request.user)
+    
+    context = {
+        "settings_form": settings_form,
+    }
+    return render(request, "accounts/vendorSettings.html", context)
 
 # VIEW THAT RESTRICT ACCESS TO ONLY VENDOR DASHBOARD
 @login_required(login_url='login')
