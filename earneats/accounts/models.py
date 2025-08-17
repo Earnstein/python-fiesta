@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.contrib.gis.db import models as gis_models
 from django.contrib.gis.geos import Point
 from django_countries.fields import CountryField
+from phonenumber_field.modelfields import PhoneNumberField
 
 # Create your models here.
 
@@ -49,7 +50,7 @@ class User(AbstractBaseUser):
     last_name = models.CharField(max_length=50)
     username = models.CharField(max_length=50, unique=True)
     email = models.EmailField(max_length=254, unique=True)
-    phone_number = models.CharField(max_length=12, blank=True)
+    phone_number = PhoneNumberField(blank=True, null=True, help_text="Enter phone number with country code (e.g., +1234567890)")
     role = models.PositiveSmallIntegerField(choices=ROLE_CHOICE, blank=True, null=True)
 
     # Required Fields
