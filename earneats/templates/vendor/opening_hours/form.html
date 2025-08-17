@@ -30,7 +30,7 @@
                                         {% if form.fields.day_of_week.choices|length == 1 and form.fields.day_of_week.choices.0.0 == '' %}
                                             <div class="alert alert-warning">
                                                 <i class="icon-warning"></i> All days of the week are already configured. 
-                                                <a href="{% url 'opening_hours_list' %}" class="alert-link">Go back to list</a> to edit existing hours.
+                                                <a href="{% url 'vendor:opening_hours_list' %}" class="alert-link">Go back to list</a> to edit existing hours.
                                             </div>
                                         {% else %}
                                             <form method="POST" class="form-horizontal">
@@ -97,7 +97,7 @@
                                                     <button type="submit" class="btn btn-primary">
                                                         <i class="icon-save"></i> <span class="d-none d-md-inline">{{ action }} Opening Hours</span>
                                                     </button>
-                                                    <a href="{% url 'opening_hours_list' %}" class="btn btn-secondary">
+                                                    <a href="{% url 'vendor:opening_hours_list' %}" class="btn btn-secondary">
                                                         <i class="icon-arrow-left"></i> <span class="d-none d-md-inline">Back to List</span>
                                                     </a>
                                                 </div>
