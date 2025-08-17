@@ -27,6 +27,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django.contrib.gis", 
     "accounts.apps.AccountsConfig",
+    "customers.apps.CustomersConfig",
     "vendor.apps.VendorConfig",
     "menu.apps.MenuConfig",
     "marketplace.apps.MarketplaceConfig",
