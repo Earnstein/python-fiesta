@@ -27,7 +27,7 @@ def profileView(request):
             profile_form.save()
             vendor_form.save()
             messages.success(request, "Profile updated successfully")
-            return redirect("vendorProfile")
+            return redirect("vendor:profile")
         else:
             messages.error(request, "Error updating profile")
             print(profile_form.errors, vendor_form.errors)
@@ -83,17 +83,17 @@ def opening_hours_create(request):
             
             if existing_hours:
                 messages.error(request, f'Opening hours for {dict(DAY_OF_WEEK_CHOICES)[day_of_week]} already exist. Please edit the existing entry instead.')
-                return redirect('opening_hours_list')
+                return redirect('vendor:opening_hours_list')
             
             try:
                 opening_hours = form.save(commit=False)
                 opening_hours.vendor = vendor
                 opening_hours.save()
                 messages.success(request, f'Opening hours for {opening_hours.get_day_name()} created successfully!')
-                return redirect('opening_hours_list')
+                return redirect('vendor:opening_hours_list')
             except IntegrityError:
                 messages.error(request, f'Opening hours for {dict(DAY_OF_WEEK_CHOICES)[day_of_week]} already exist. Please edit the existing entry instead.')
-                return redirect('opening_hours_list')
+                return redirect('vendor:opening_hours_list')
     else:
         form = OpeningHoursForm(vendor=vendor)
     
@@ -116,7 +116,7 @@ def opening_hours_edit(request, pk):
         if form.is_valid():
             form.save()
             messages.success(request, f'Opening hours for {opening_hours.get_day_name()} updated successfully!')
-            return redirect('opening_hours_list')
+            return redirect('vendor:opening_hours_list')
     else:
         form = OpeningHoursForm(instance=opening_hours)
     
@@ -139,7 +139,7 @@ def opening_hours_delete(request, pk):
         day_name = opening_hours.get_day_name()
         opening_hours.delete()
         messages.success(request, f'Opening hours for {day_name} deleted successfully!')
-        return redirect('opening_hours_list')
+        return redirect('vendor:opening_hours_list')
     
     context = {
         'vendor': vendor,
@@ -189,7 +189,7 @@ def opening_hours_bulk_edit(request):
             opening_hours.save()
         
         messages.success(request, 'Opening hours updated successfully!')
-        return redirect('opening_hours_list')
+        return redirect('vendor:opening_hours_list')
     
     # Get existing opening hours for the week
     opening_hours_dict = {}
@@ -222,7 +222,7 @@ def httpVendorDashboard(request):
     View for displaying the vendor dashboard. Only accessible to vendors.
     """
     context = get_vendor(request)
-    return render(request, "vendor/vendorDashboard.html", context)
+    return render(request, "vendor/dashboard.html", context)
 
 
 @login_required(login_url='login')
@@ -237,7 +237,7 @@ def vendorSettings(request):
         if settings_form.is_valid():
             settings_form.save()
             messages.success(request, "Settings updated successfully")
-            return redirect("vendorSettings")
+            return redirect("vendor:settings")
         else:
             messages.error(request, "Error updating settings")
             print(settings_form.errors)
@@ -247,4 +247,4 @@ def vendorSettings(request):
     context = {
         "settings_form": settings_form,
     }
-    return render(request, "vendor/vendorSettings.html", context)
+    return render(request, "vendor/settings.html", context)
