@@ -75,11 +75,11 @@
                                         <h4 class="widget-title">Opening Hours</h4>
                                         <div class="widget-actions mb-2">
                                             {% if opening_hours.count < 7 %}
-                                                <a href="{% url 'opening_hours_create' %}" class="btn btn-primary btn-sm">
+                                                <a href="{% url 'vendor:opening_hours_create' %}" class="btn btn-primary btn-sm">
                                                     <i class="icon-plus"></i> <span class="d-none d-md-inline">Add Day</span>
                                                 </a>
                                             {% endif %}
-                                            <a href="{% url 'opening_hours_bulk_edit' %}" class="btn btn-success btn-sm">
+                                            <a href="{% url 'vendor:opening_hours_bulk_edit' %}" class="btn btn-success btn-sm">
                                                 <i class="icon-edit"></i> <span class="d-none d-md-inline">Bulk Edit</span>
                                             </a>
                                         </div>
@@ -135,10 +135,10 @@
                                                         {% endif %}
                                                     </td>
                                                     <td>
-                                                        <a href="{% url 'opening_hours_edit' hours.pk %}" class="btn btn-sm btn-outline-primary">
+                                                        <a href="{% url 'vendor:opening_hours_edit' hours.pk %}" class="btn btn-sm btn-outline-primary">
                                                             <i class="icon-edit"></i> <span class="d-none d-md-inline">Edit</span>
                                                         </a>
-                                                        <a href="{% url 'opening_hours_delete' hours.pk %}" class="btn btn-sm btn-outline-danger">
+                                                        <a href="{% url 'vendor:opening_hours_delete' hours.pk %}" class="btn btn-sm btn-outline-danger">
                                                             <i class="icon-trash"></i> <span class="d-none d-md-inline">Delete</span>
                                                         </a>
                                                     </td>
@@ -147,7 +147,7 @@
                                                 <tr>
                                                     <td colspan="5" class="text-center">
                                                         <p class="text-muted">No opening hours configured yet.</p>
-                                                        <a href="{% url 'opening_hours_bulk_edit' %}" class="btn btn-primary">
+                                                        <a href="{% url 'vendor:opening_hours_bulk_edit' %}" class="btn btn-primary">
                                                             <i class="icon-edit"></i> <span class="d-none d-md-inline">Set Up Opening Hours</span>
                                                         </a>
                                                     </td>
