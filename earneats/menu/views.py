@@ -83,7 +83,7 @@ def createFood(request):
     vendor = get_vendor(request)
     form = FoodItemForm(vendor=vendor)
     if request.method == "POST":
-        form = FoodItemForm(request.POST, request.FILES)
+        form = FoodItemForm(request.POST, request.FILES, vendor=vendor)
         if form.is_valid():
             food_title = form.cleaned_data['food_title']
             food_form = form.save(commit=False)
