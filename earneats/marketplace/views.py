@@ -42,6 +42,8 @@ def vendor_detail(request, vendor_slug):
     vendor = get_object_or_404(Vendor, vendor_slug=vendor_slug)
     categories = (
         vendor.categories.all()
+        .filter(fooditems__isnull=False)
+        .distinct()
         .order_by("category_name")
         .prefetch_related(
             "fooditems",
