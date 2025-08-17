@@ -95,12 +95,35 @@
                   <ul>
                     {% cart_total user as my_dict %} 
                     {% for key, value in my_dict.items %}
+                      {% if key == "subtotal" %}
+                      <li class="list-unstyled">
+                        {{key|title}}:
+                        <span class="price float-right fw-bolder" id="{{key}}">
+                          ${{value|floatformat:2}}
+                        </span>
+                      </li>
+                      {% endif %}
+                    {% endfor %}
+                    {% if my_dict.tax_type and my_dict.tax_percentage %}
                     <li class="list-unstyled">
-                      {{key}}
-                      <span class="price float-right fw-bolder" id="{{key}}">
-                        ${{value|floatformat:2}}
+                      {{my_dict.tax_type}} ({{my_dict.tax_percentage}}%):
+                      <span class="price float-right fw-bolder" id="tax">
+                        ${{my_dict.tax|floatformat:2}}
                       </span>
                     </li>
+                    {% endif %}
+                    <li class="list-unstyled">
+                      <hr class="my-2">
+                    </li>
+                    {% for key, value in my_dict.items %}
+                      {% if key == "total" %}
+                      <li class="list-unstyled">
+                        {{key|title}}:
+                        <span class="price float-right fw-bolder" id="{{key}}">
+                          ${{value|floatformat:2}}
+                        </span>
+                      </li>
+                      {% endif %}
                     {% endfor %}
                   </ul>
                 </div>
