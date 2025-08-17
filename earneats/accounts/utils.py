@@ -24,9 +24,9 @@ def check_role_customer(user):
 # GET CURRENT USER ROLE AND REDIRECT TO APPRORIATE PAGE
 def get_user_role(user):
     if user.role == 1:
-        redirectUrl = "vendorDashboard"
+        redirectUrl = "vendor:dashboard"
     elif user.role == 2:
-        redirectUrl = "customerDashboard"
+        redirectUrl = "customers:dashboard"
     elif user.role is None and user.is_superadmin:
         redirectUrl = "/admin"
     return redirectUrl

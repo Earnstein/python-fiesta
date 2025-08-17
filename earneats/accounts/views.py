@@ -57,7 +57,7 @@ def httpRegisterVendor(request):
     """
     if request.user.is_authenticated:
         messages.warning(request, "You are already logged in")
-        return redirect("vendorDashboard")
+        return redirect("vendor:dashboard")
     elif request.method == "POST":
         form = UserForm(request.POST)
         vendorForm = VendorForm(request.POST, request.FILES)
