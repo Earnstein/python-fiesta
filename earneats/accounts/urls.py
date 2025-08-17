@@ -2,7 +2,6 @@ from django.urls import path, include
 from . import views
 
 urlpatterns = [
-
     # USER AUTHENTICATION URLS
     path("registerUser/", views.httpRegisterUser, name="registerUser"),
     path("registerVendor/", views.httpRegisterVendor, name="registerVendor"),
@@ -12,11 +11,6 @@ urlpatterns = [
     # USER ACCOUNT URLS
     path("", views.httpGetUserAccount),
     path("myAccount/", views.httpGetUserAccount, name="userAccount"),
-    path("customerDashboard/", views.httpCustomerDashboard, name="customerDashboard"),
-    path("customerProfile/", views.httpCustomerProfile, name="customerProfile"),
-    path("customerSettings/", views.customerSettings, name="customerSettings"),
-    path("vendorDashboard/", views.httpVendorDashboard, name="vendorDashboard"),
-    path("vendorSettings/", views.vendorSettings, name="vendorSettings"),
     path("activate/<uidb64>/<token>/", views.activate, name="activate"),
 
     # FORGOT PASSWORD AND RESET PASSWORD
@@ -24,5 +18,7 @@ urlpatterns = [
     path("resetPasswordValidate/<uidb64>/<token>/", views.httpResetPasswordValidate, name="resetPasswordValidate"),
     path("resetPassword/", views.httpResetPassword, name="resetPassword"),
 
+    # INCLUDE OTHER APPS
+    path("customers/", include("customers.urls")),
     path("vendor/", include("vendor.urls")),
 ]
