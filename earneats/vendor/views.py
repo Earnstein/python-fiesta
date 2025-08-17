@@ -1,21 +1,18 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
-from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required, user_passes_test
 from accounts.utils import check_role_vendor
-from accounts.forms import UserProfileForm
+from accounts.forms import UserProfileForm, UserSettingsForm
 from accounts.models import UserProfile
 from .forms import VendorForm
 from .models import Vendor
-from django.contrib.auth.decorators import login_required
-from django.contrib import messages
 from django.http import JsonResponse
 from django.utils import timezone
 from .models import Vendor, OpeningHours, DAY_OF_WEEK_CHOICES
-from accounts.utils import check_role_vendor
 from .forms import OpeningHoursForm
 from datetime import time
 from django.db import IntegrityError
+from accounts.context_processors import get_vendor
 
 
 @login_required(login_url="login")
@@ -216,3 +213,38 @@ def opening_hours_bulk_edit(request):
         'day_choices': DAY_OF_WEEK_CHOICES,
     }
     return render(request, 'vendor/opening_hours/bulk_edit.html', context)
+
+
+@login_required(login_url='login')
+@user_passes_test(check_role_vendor, login_url="login")
+def httpVendorDashboard(request):
+    """
+    View for displaying the vendor dashboard. Only accessible to vendors.
+    """
+    context = get_vendor(request)
+    return render(request, "vendor/vendorDashboard.html", context)
+
+
+@login_required(login_url='login')
+@user_passes_test(check_role_vendor)
+def vendorSettings(request):
+    """
+    View for updating vendor basic information (firstname, lastname, username, phone_number).
+    Only accessible to vendors.
+    """
+    if request.method == "POST":
+        settings_form = UserSettingsForm(request.POST, instance=request.user)
+        if settings_form.is_valid():
+            settings_form.save()
+            messages.success(request, "Settings updated successfully")
+            return redirect("vendorSettings")
+        else:
+            messages.error(request, "Error updating settings")
+            print(settings_form.errors)
+    else:
+        settings_form = UserSettingsForm(instance=request.user)
+    
+    context = {
+        "settings_form": settings_form,
+    }
+    return render(request, "vendor/vendorSettings.html", context)
