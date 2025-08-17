@@ -146,11 +146,15 @@ def remove_from_cart(request, food_id):
 
 @login_required(login_url="login")
 def cart(request):
-    carts = (
-        Cart.objects.filter(user=request.user).order_by("-created_at")
-        if request.user.is_authenticated
-        else None
-    )
+    carts = Cart.objects.filter(user=request.user).order_by("-created_at")
+    page_number = request.GET.get("page", 1)
+    paginator = Paginator(carts, 3)
+    try:
+        carts = paginator.page(page_number)
+    except EmptyPage:
+        carts = paginator.page(paginator.num_pages)
+    except PageNotAnInteger:
+        carts = paginator.page(1)
     context = {"carts": carts}
     return render(request, "marketplace/cart.html", context)
 
