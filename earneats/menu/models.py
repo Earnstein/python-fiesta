@@ -44,7 +44,7 @@ class FoodItem(models.Model):
 
     def clean(self):
         # Ensure the category belongs to the same vendor
-        if self.category and self.vendor and self.category.vendor != self.vendor:
+        if self.category and self.vendor_id and self.category.vendor_id != self.vendor_id:
             raise ValidationError("Food item must belong to a category from the same vendor.")
         
         self.food_title = self.food_title.capitalize()
