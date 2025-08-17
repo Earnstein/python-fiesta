@@ -63,7 +63,7 @@ def httpCustomerDashboard(request):
         "total_vendors": paginator.count,
         "has_location": bool(location)
     }
-    return render(request, "customers/customerDashboard.html", context)
+    return render(request, "customers/dashboard.html", context)
 
 
 @login_required(login_url='login')
@@ -79,7 +79,7 @@ def httpCustomerProfile(request):
         if profile_form.is_valid():
             profile_form.save()
             messages.success(request, "Profile updated successfully")
-            return redirect("customerProfile")
+            return redirect("customers:profile")
         else:
             messages.error(request, "Error updating profile")
             print(profile_form.errors)
@@ -90,7 +90,7 @@ def httpCustomerProfile(request):
         "profile_form": profile_form,
         "profile": profile,
     }
-    return render(request, "customers/customerProfile.html", context)
+    return render(request, "customers/profile.html", context)
 
 
 @login_required(login_url='login')
@@ -105,7 +105,7 @@ def customerSettings(request):
         if settings_form.is_valid():
             settings_form.save()
             messages.success(request, "Settings updated successfully")
-            return redirect("customerSettings")
+            return redirect("customers:settings")
         else:
             messages.error(request, "Error updating settings")
             print(settings_form.errors)
@@ -115,4 +115,4 @@ def customerSettings(request):
     context = {
         "settings_form": settings_form,
     }
-    return render(request, "customers/customerSettings.html", context)
+    return render(request, "customers/settings.html", context)
