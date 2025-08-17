@@ -1,9 +1,9 @@
 <div class="user-account-nav user-account-sidebar">
     <div class="user-nav-list">
         <ul>
-            <li class="{% if '/customerDashboard/' == request.path or '/accounts/customer/' == request.path %}active{% endif %}"><a href="{% url 'userAccount' %}"><i class="icon-dashboard3"></i>Dashboard</a></li>
-            <li class="{% if 'profile' in request.path %}active{% endif %}"><a href="{% url 'customerProfile' %}"><i class="icon-user"></i>My Profile</a></li>
-            <li class="{% if 'settings' in request.path %}active{% endif %}"><a href="{% url 'customerSettings' %}"><i class="icon-cog"></i>Settings</a></li>
+            <li class="{% if '/customers/dashboard/' == request.path or '/accounts/customers/' == request.path %}active{% endif %}"><a href="{% url 'customers:dashboard' %}"><i class="icon-dashboard3"></i>Dashboard</a></li>
+<li class="{% if 'profile' in request.path %}active{% endif %}"><a href="{% url 'customers:profile' %}"><i class="icon-user"></i>My Profile</a></li>
+<li class="{% if 'settings' in request.path %}active{% endif %}"><a href="{% url 'customers:settings' %}"><i class="icon-cog"></i>Settings</a></li>
             <li><a href="restaurant-orders.html"><i class="icon-add_shopping_cart"></i>Orders</a></li>
             <li><a href="restaurant-earnings.html"><i class="icon-money"></i>Earnings</a></li>
             <li><a href="restaurant-statement.html"><i class="icon-file-text22"></i>Statement</a></li>
